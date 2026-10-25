@@ -1,6 +1,6 @@
 <title>نموذج إجراءات الغياب بعذر</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@600;700&family=Tajawal:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Reem+Kufi:wght@600;700&family=Tajawal:wght@400;500;700&display=swap">
 <style>
 /* Layout: a white A4-style sheet that mirrors the ministry form, with a bar below it for the WhatsApp round trip.
    On phones the three-row table becomes one card per procedure. */
@@ -121,6 +121,91 @@ details[open] summary{margin-bottom:10px}
   .cell-date{border:1px solid var(--paper-line);border-radius:6px;padding:6px}
 }
 @media (prefers-reduced-motion:no-preference){.btn{transition:filter .15s}.btn:hover{filter:brightness(1.07)}}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:5px}
+.tabs button{border:0;background:transparent;border-radius:8px;padding:9px 6px;font-weight:700;cursor:pointer;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-fg)}
+.entry{display:flex;flex-direction:column;gap:14px}
+.erows{display:flex;flex-direction:column;gap:14px}
+.e-head{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.e-k{margin:0;font-family:var(--font-display);font-weight:700;font-size:1.25rem;color:var(--accent);text-align:center}
+.e-head .line>input{color:var(--fg);border-bottom-color:var(--line)}
+.e-head .line>input:focus{background:transparent;border-bottom-color:var(--accent)}
+.fld input.rtl{direction:rtl}
+.entry .eta{border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);padding:9px 11px;min-height:84px;resize:vertical;width:100%}
+.entry .eta:focus{background:var(--bg)}
+.erow h3{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dtrow{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.dtrow .fld{flex:1;min-width:180px}
+.hjbox{display:flex;flex-direction:column;min-width:150px}.hjbox small{color:var(--muted)}.hjbox b{font-weight:700;color:var(--accent)}
+.entry input:read-only,.entry textarea:read-only{opacity:.7}
+.bar{gap:10px}
+
+/* 3D treatment for the entry page: stacked-slab cards, extruded title, raised buttons, pointer tilt */
+.entry .card,.entry .e-head{transform:perspective(1100px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transform-style:preserve-3d;
+  border-color:color-mix(in srgb,var(--line) 70%,var(--fg));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),
+    0 2px 0 color-mix(in srgb,var(--line) 80%,var(--fg)),0 4px 0 color-mix(in srgb,var(--line) 65%,var(--fg)),0 6px 0 color-mix(in srgb,var(--line) 50%,var(--fg)),
+    0 22px 26px -12px rgba(5,30,27,.38)}
+.entry .e-head{background:linear-gradient(160deg,var(--surface),color-mix(in srgb,var(--surface) 80%,var(--accent)))}
+.entry h3{transform:translateZ(14px)}
+.e-k{text-shadow:0 1px 0 color-mix(in srgb,var(--accent) 80%,black),0 2px 0 color-mix(in srgb,var(--accent) 65%,black),0 3px 0 color-mix(in srgb,var(--accent) 50%,black),0 4px 0 color-mix(in srgb,var(--accent) 38%,black),0 10px 12px rgba(0,0,0,.28)}
+.entry .fld input,.entry .eta{box-shadow:inset 0 2px 5px rgba(0,0,0,.22),0 1px 0 rgba(255,255,255,.25)}
+.e-head .line>input{box-shadow:none}
+.entry .fld input:focus,.entry .eta:focus{box-shadow:inset 0 2px 5px rgba(0,0,0,.22),0 0 0 3px color-mix(in srgb,var(--accent) 45%,transparent);outline:none}
+.hjbox{background:var(--bg);border-radius:10px;padding:6px 12px;box-shadow:0 3px 0 color-mix(in srgb,var(--line) 70%,var(--fg)),0 8px 10px -6px rgba(0,0,0,.3)}
+.entry .chip{box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.bar .btn,.tabs button[aria-selected="true"]{box-shadow:0 5px 0 color-mix(in srgb,var(--accent) 55%,black),0 12px 16px -6px rgba(0,0,0,.4);transform:translateY(-2px)}
+.bar .btn:active,.tabs button[aria-selected="true"]:active{transform:translateY(3px);box-shadow:0 1px 0 color-mix(in srgb,var(--accent) 55%,black)}
+.tabs{box-shadow:inset 0 3px 6px rgba(0,0,0,.15)}
+@media (prefers-reduced-motion:no-preference){.entry .card,.entry .e-head{transition:transform .25s ease}.bar .btn{transition:transform .08s,box-shadow .08s}}
+@media (prefers-reduced-motion:reduce){.entry .card,.entry .e-head{transform:none!important}}
+
+/* entry v2: Amiri title, days badge beside the procedure, Hijri picker */
+.e-k{font-family:'Amiri','Reem Kufi',Georgia,serif;font-size:1.7rem;font-weight:700;letter-spacing:0;text-shadow:0 1px 0 color-mix(in srgb,var(--accent) 70%,black),0 2px 0 color-mix(in srgb,var(--accent) 50%,black),0 6px 8px rgba(0,0,0,.22)}
+.erow{display:grid;grid-template-columns:78px minmax(0,1fr);gap:12px 14px;align-items:stretch}
+.dbadge{display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px;background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 88%,white),var(--accent));color:var(--accent-fg);box-shadow:0 5px 0 color-mix(in srgb,var(--accent) 55%,black),0 12px 14px -6px rgba(0,0,0,.4);transform:translateZ(14px)}
+.dbadge b{font-family:var(--font-display);font-size:2.1rem;line-height:1.1}
+.dbadge span{font-size:.85rem;font-weight:700}
+.eproc{min-width:0}
+.eproc .eta{flex:1}
+.edate{grid-column:1/-1;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.edate .lab{font-size:.92rem;font-weight:500}
+.hp{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.hp select{border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);padding:8px 8px;box-shadow:inset 0 2px 4px rgba(0,0,0,.18);min-width:0}
+.hp .hm{min-width:112px}
+.hp-today{border:1px solid var(--line);background:transparent;color:var(--accent);font-weight:700;border-radius:8px;padding:7px 10px;cursor:pointer}
+.hp-today:disabled,.hp select:disabled{opacity:.6;cursor:default}
+.pdate{align-items:center}
+.paper .hp select{background:var(--paper-tint);color:var(--paper-ink);border-color:var(--paper-line);box-shadow:none}
+.tbl .hj{font-size:.95rem;color:var(--paper-ink);font-weight:500;min-height:0}
+@media (min-width:760px){
+  .erow{grid-template-columns:92px minmax(0,1fr) 330px}
+  .edate{grid-column:auto;flex-direction:column;align-items:flex-start;justify-content:center}
+}
+
+/* options, principal card, notes */
+.sub{color:var(--muted);font-size:.85rem;font-weight:400}
+.entry .eta.small{min-height:58px}
+.eproc{display:flex;flex-direction:column;gap:10px}
+.eproc .lab{font-size:.92rem;font-weight:500}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:9px 11px;border-radius:10px;background:var(--bg);box-shadow:inset 0 2px 4px rgba(0,0,0,.16);cursor:pointer;line-height:1.5}
+.opt input{width:20px;height:20px;margin-top:3px;accent-color:var(--accent);flex:none}
+.opt span{min-width:0}
+.ptext{white-space:pre-line;line-height:1.6;font-size:.95rem;min-height:60px;overflow-wrap:anywhere}
+.notes{margin-top:22px;display:flex;flex-direction:column;gap:8px}
+.notes h2{margin:0;font-size:1rem;font-weight:700;color:var(--paper-head)}
+.notes textarea{border:1.5px dotted var(--paper-line);border-radius:6px;padding:8px 10px;min-height:96px;width:100%;background:transparent;color:var(--paper-ink)}
+.notes textarea:not(:read-only){background:var(--paper-tint)}
+.paper .hp-today{display:none}
+
+.optsel{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);padding:10px 12px;box-shadow:inset 0 2px 4px rgba(0,0,0,.16),0 3px 0 color-mix(in srgb,var(--line) 70%,var(--fg));cursor:pointer;min-width:0}
+.optsel:disabled{opacity:.6;cursor:default}
+.optcard summary{cursor:pointer;font-weight:700}
+.optcard[open] summary{margin-bottom:12px}
+.optcard{gap:0}
+.optcard .fld{margin-top:10px}
+
 .pdfs{position:fixed;left:-12000px;top:0;width:794px;min-height:1123px;box-sizing:border-box;padding:56px 52px;background:#fff;color:#1b2a29;direction:rtl;font-family:var(--font-body);font-size:16px;line-height:1.6}
 .pdfs .mh{display:flex;justify-content:space-between;align-items:center}
 .pdfs .mhr{display:flex;flex-direction:column;gap:4px}.pdfs .mhr b{color:#0e5f57}
@@ -137,6 +222,41 @@ details[open] summary{margin-bottom:10px}
 <main class="wrap">
   <div class="banner" id="banner"><span class="pill" id="pill"></span><div><b id="b-t"></b><span id="b-s"></span></div></div>
 
+  <div class="tabs only-s" id="tabs" role="tablist"><button type="button" role="tab" data-v="entry">١. إدخال البيانات</button><button type="button" role="tab" data-v="form">٢. النموذج والإرسال</button></div>
+
+  <section class="entry only-s" id="v-entry">
+    <div class="e-head">
+      <p class="e-k">المملكة العربية السعودية</p>
+      <label class="line"><span>المنطقة:</span><input id="e-r" data-k="r" autocomplete="off"></label>
+      <label class="line"><span>المدرسة:</span><input id="e-s" data-k="s" autocomplete="off"></label>
+    </div>
+    <div class="card">
+      <h3>بيانات الطالبة</h3>
+      <div class="fields">
+        <label class="fld">اسم الطالبة<input class="rtl" id="e-n" data-k="n" autocomplete="off"></label>
+        <label class="fld">المرحلة<input class="rtl" id="e-st" data-k="st" autocomplete="off"></label>
+        <label class="fld">الصف<input class="rtl" id="e-g" data-k="g" autocomplete="off"></label>
+      </div>
+    </div>
+    <details class="card optcard">
+      <summary>تعديل نصوص الخيارات <small class="sub">تظهر في قائمة «الخيارات» داخل كل مرحلة غياب</small></summary>
+      <label class="fld">الخيار الأول<textarea class="eta small" data-ot="0"></textarea></label>
+      <label class="fld">الخيار الثاني<textarea class="eta small" data-ot="1"></textarea></label>
+      <label class="fld">الخيار الثالث<textarea class="eta small" data-ot="2"></textarea></label>
+    </details>
+    <div id="e-rows" class="erows"></div>
+    <div class="card">
+      <h3>مديرة المدرسة</h3>
+      <div class="fields">
+        <label class="fld">اسم مديرة المدرسة<input class="rtl" id="e-pn" data-k="pn" autocomplete="off"></label>
+        <div class="fld">التاريخ (هجري)<div class="hp" data-hp="pdt"></div></div>
+      </div>
+      <div class="fld">التوقيع<button type="button" class="sig" data-key="ps" aria-label="توقيع مديرة المدرسة" style="max-width:260px"><canvas></canvas><span class="hint">اضغط للتوقيع</span></button></div>
+      <small class="sub">يظهر الاسم والتوقيع والتاريخ تلقائياً في النموذج الذي يصل إلى ولي الأمر.</small>
+    </div>
+  </section>
+
+  <div id="v-form">
   <article class="paper" id="paper">
     <header class="mast">
       <div class="mast-r">
@@ -169,10 +289,15 @@ details[open] summary{margin-bottom:10px}
       <label class="line"><span>الاسم:</span><input id="f-pn" data-k="pn" autocomplete="off"></label>
       <div class="sigrow"><span>التوقيع:</span>
         <button type="button" class="sig" data-key="ps" aria-label="توقيع مدير المدرسة"><canvas></canvas><span class="hint">اضغط للتوقيع</span></button></div>
-      <label class="line"><span>التاريخ:</span><input id="f-pdt" data-k="pdt" type="date" style="max-width:190px"></label>
-      <span class="hj" id="hj-pdt"></span>
+      <div class="line pdate"><span>التاريخ (هجري):</span><div class="hp" data-hp="pdt"></div></div>
+    </section>
+
+    <section class="notes">
+      <h2>ملاحظات ولي الأمر</h2>
+      <textarea id="f-nt" data-k="nt" maxlength="600" placeholder=""></textarea>
     </section>
   </article>
+  </div>
 
   <section class="card only-s" id="card-s">
     <h3>الإرسال عبر واتساب</h3>
@@ -194,6 +319,8 @@ details[open] summary{margin-bottom:10px}
       <textarea class="paste" id="paste-p" placeholder="الصقي هنا الرسالة أو الرابط الذي وصلكِ من المدرسة"></textarea>
       <div class="row" style="margin-top:8px"><button type="button" class="btn ghost" id="b-import-p">فتح النموذج</button></div>
     </details>
+    <div class="row"><button type="button" class="btn ghost" id="b-pdf-p" hidden>حفظ نسخة PDF</button></div>
+    <small class="sub" id="pdf-p-hint" hidden>بعد التوقيع يمكنكم حفظ نسخة PDF من النموذج وإرفاقها في محادثة واتساب.</small>
   </section>
 
   <div class="note" id="note" role="status" aria-live="polite"></div>
@@ -207,7 +334,7 @@ details[open] summary{margin-bottom:10px}
     <span class="note" id="out-note"></span>
   </section>
 
-  <div class="bar"><button type="button" class="btn" id="b-send"></button></div>
+  <div class="bar"><button type="button" class="btn" id="b-next">معاينة النموذج</button><button type="button" class="btn" id="b-send"></button></div>
 </main>
 
 <div id="padov" hidden role="dialog" aria-modal="true" aria-labelledby="pad-title">
@@ -228,11 +355,13 @@ details[open] summary{margin-bottom:10px}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 (()=>{
-const BASE=''; // يستخدم رابط الموقع المنشور تلقائياً
+const BASE='https://claude.ai/artifact/XGQ15wpm4TEVrQY3R8rsZt';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const DAYS=['٣ أيام','٥ أيام','١٠ أيام'];
 const DEF_SCHOOL='ابتدائية الأبناء الخامسة للطفولة المبكرة', DEF_REGION='عسير', DEF_PRINCIPAL='نورة آل عازب';
-const blank=()=>({r:DEF_REGION,s:DEF_SCHOOL,n:'',st:'',g:'',rows:DAYS.map(()=>({p:'',d:'',sg:[],pg:[],pd:''})),pn:DEF_PRINCIPAL,ps:[],pdt:'',sp:'',to:'p'});
+const DEF_OPTS=['التواصل مع ولي أمر الطالبة لمعرفة أسباب الغياب','إبلاغ ولي أمر الطالبة بأيام الغياب بعذر لإحضار الأعذار إن وجدت','تحويل الطالبة للموجهة الطلابية لدراسة الحالة ووضع الخطط المناسبة لها إن احتاجت لذلك'];
+const SENDER='وكيلة الشؤون الطلابية لطيفة الشهري';
+const blank=()=>({r:DEF_REGION,s:DEF_SCHOOL,n:'',st:'',g:'',rows:DAYS.map(()=>({p:'',o:0,d:'',sg:[],pg:[],pd:''})),pn:DEF_PRINCIPAL,ps:[],pdt:'',sp:'',to:'p',ot:DEF_OPTS.slice(),nt:''});
 let S=blank(), mode='s', dlc=null;
 
 /* ---------- storage (per-device convenience only) ---------- */
@@ -243,12 +372,13 @@ const saveDraft=()=>{ if(mode==='s') ls.set('abs-draft2',JSON.stringify(S)); };
 const pk=st=>st.map(s=>{const o=[];let px=0,py=0;for(let i=0;i<s.length;i+=2){o.push(s[i]-px,s[i+1]-py);px=s[i];py=s[i+1]}return o});
 const upk=st=>(Array.isArray(st)?st:[]).slice(0,40).map(s=>{const o=[];let x=0,y=0;if(!Array.isArray(s))return o;for(let i=0;i+1<s.length;i+=2){x+=+s[i]||0;y+=+s[i+1]||0;o.push(Math.max(0,Math.min(400,x)),Math.max(0,Math.min(160,y)))}return o}).filter(s=>s.length>=2);
 const str=v=>typeof v==='string'?v.slice(0,300):'';
-const pack=s=>[1,s.to,s.sp,s.r,s.s,s.n,s.st,s.g,s.rows.map(x=>[x.p,x.d,pk(x.sg),pk(x.pg),x.pd]),s.pn,pk(s.ps),s.pdt];
+const pack=s=>[1,s.to,s.sp,s.r,s.s,s.n,s.st,s.g,s.rows.map(x=>[x.p,x.d,pk(x.sg),pk(x.pg),x.pd,x.o|0]),s.pn,pk(s.ps),s.pdt,s.ot.every((t,i)=>t===DEF_OPTS[i])?[]:s.ot,s.nt];
 function unpack(a){
   if(!Array.isArray(a)||a[0]!==1||!Array.isArray(a[8]))return null;
   const o=blank(); o.to=a[1]==='s'?'s':'p'; o.sp=str(a[2]); o.r=str(a[3]); o.s=str(a[4]); o.n=str(a[5]); o.st=str(a[6]); o.g=str(a[7]);
-  o.rows=DAYS.map((_,i)=>{const x=a[8][i]||[];return {p:str(x[0]),d:str(x[1]),sg:upk(x[2]),pg:upk(x[3]),pd:str(x[4])}});
-  o.pn=str(a[9]); o.ps=upk(a[10]); o.pdt=str(a[11]); return o;
+  o.rows=DAYS.map((_,i)=>{const x=a[8][i]||[];return {p:str(x[0]),d:str(x[1]),sg:upk(x[2]),pg:upk(x[3]),pd:str(x[4]),o:(+x[5]|0)&7}});
+  o.pn=str(a[9]); o.ps=upk(a[10]); o.pdt=str(a[11]);
+  o.ot=Array.isArray(a[12])&&a[12].length===3?a[12].map(str):DEF_OPTS.slice(); o.nt=typeof a[13]==='string'?a[13].slice(0,600):''; return o;
 }
 const b64=u=>{let s='';for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
 const unb64=t=>{t=t.replace(/-/g,'+').replace(/_/g,'/');while(t.length%4)t+='=';const s=atob(t),u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u};
@@ -273,7 +403,18 @@ function tokenFrom(t){
 }
 
 /* ---------- dates ---------- */
-const hijri=iso=>{ if(!iso)return ''; try{return new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-arab',{day:'numeric',month:'long',year:'numeric'}).format(new Date(iso+'T12:00:00'))}catch(e){return ''} };
+const hijri=iso=>{ if(!iso)return ''; try{return new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-arab',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(iso+'T12:00:00Z'))}catch(e){return ''} };
+const MONTHS=['محرم','صفر','ربيع الأول','ربيع الآخر','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
+const HF=new Intl.DateTimeFormat('en-US-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',year:'numeric',timeZone:'UTC'});
+function hparts(t){const o={};HF.formatToParts(new Date(t)).forEach(p=>{if(p.type==='day')o.d=+p.value;if(p.type==='month')o.m=+p.value;if(p.type==='year')o.y=+p.value});return o}
+function hij2iso(y,m,d){
+  let t=Date.UTC(622,6,19,12)+((y-1)*354.36708+(m-1)*29.530588+(d-1))*864e5;
+  for(let k=0;k<60;k++){
+    const p=hparts(t); if(p.y===y&&p.m===m&&p.d===d)return new Date(t).toISOString().slice(0,10);
+    const diff=(p.y-y)*354.36708+(p.m-m)*29.530588+(p.d-d); let st=Math.round(diff); if(!st)st=diff>0?1:-1; t-=st*864e5;
+  }
+  return '';
+}
 const todayISO=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())};
 
 /* ---------- signature drawing ---------- */
@@ -296,64 +437,157 @@ DAYS.forEach((d,i)=>{
   const tr=document.createElement('tr'); tr.dataset.i=i;
   tr.innerHTML=
    '<td class="days">'+d+'</td>'+
-   '<td class="c-proc" data-l="الإجراء المتخذ"><textarea data-i="'+i+'" data-k="p" aria-label="الإجراء المتخذ بعد غياب '+d+'"></textarea></td>'+
-   '<td data-l="تاريخ الإجراء"><input class="cell-date" type="date" data-i="'+i+'" data-k="d" aria-label="تاريخ الإجراء"><span class="hj"></span></td>'+
+   '<td class="c-proc" data-l="الإجراء المتخذ"><div class="ptext" data-pi="'+i+'"></div></td>'+
+   '<td data-l="تاريخ الإجراء"><span class="hj"></span></td>'+
    '<td data-l="توقيع الطالب"><button type="button" class="sig" data-key="sg" data-i="'+i+'" aria-label="توقيع الطالب"><canvas></canvas><span class="hint">اضغط للتوقيع</span></button></td>'+
-   '<td data-l="توقيع ولي الأمر"><button type="button" class="sig" data-key="pg" data-i="'+i+'" aria-label="توقيع ولي الأمر"><canvas></canvas><span class="hint">اضغط للتوقيع</span></button><span class="chip"></span><span class="signed-on"></span></td>';
+   '<td data-l="توقيع ولي الأمر"><button type="button" class="sig" data-key="pg" data-i="'+i+'" aria-label="توقيع ولي الأمر"><canvas></canvas><span class="hint">اضغط للتوقيع</span></button><span class="chip" data-ci="'+i+'"></span><span class="signed-on"></span></td>';
   tbody.appendChild(tr);
 });
 
-const hasContent=i=>{const r=S.rows[i];return !!(r.p.trim()||r.d||r.sg.length)};
+/* ---------- entry page rows ---------- */
+const erows=$('#e-rows'), NUMS=['٣','٥','١٠'];
+DAYS.forEach((d,i)=>{
+  const c=document.createElement('div'); c.className='card erow'; c.dataset.i=i;
+  let opts='<option value="">الخيارات: اختاري إجراءً جاهزاً لإضافته</option>'; for(let k=0;k<3;k++)opts+='<option value="'+k+'"></option>';
+  c.innerHTML='<div class="dbadge"><b>'+NUMS[i]+'</b><span>أيام</span></div>'+
+   '<div class="eproc"><label class="fld">الإجراء المتخذ<textarea class="eta" data-i="'+i+'" data-k="p" placeholder="اكتبي الإجراء المتخذ"></textarea></label>'+
+   '<select class="optsel" data-i="'+i+'" aria-label="الخيارات">'+opts+'</select></div>'+
+   '<div class="edate"><span class="lab">تاريخ الإجراء (هجري)</span><div class="hp" data-hp="'+i+'"></div><span class="chip" data-ci="'+i+'"></span></div>';
+  erows.appendChild(c);
+});
+/* Hijri date picker: day / month / year selects, stored internally as an ISO date */
+const CY=hparts(Date.now()).y;
+$$('.hp').forEach(c=>{
+  const opt=(v,t)=>'<option value="'+v+'">'+t+'</option>';
+  let dd=opt('','اليوم'); for(let k=1;k<=30;k++)dd+=opt(k,k);
+  let mm=opt('','الشهر'); MONTHS.forEach((n,k)=>mm+=opt(k+1,n));
+  let yy=opt('','السنة'); [CY-1,CY,CY+1].forEach(y=>yy+=opt(y,y));
+  c.innerHTML='<select class="hd" aria-label="اليوم">'+dd+'</select><select class="hm" aria-label="الشهر">'+mm+'</select><select class="hy" aria-label="السنة">'+yy+'</select><button type="button" class="hp-today">اليوم</button>';
+});
+const hpSet=(c,iso)=>{const k=c.dataset.hp; if(k==='pdt')S.pdt=iso; else S.rows[+k].d=iso};
+document.addEventListener('change',e=>{
+  const c=e.target.closest&&e.target.closest('.hp'); if(!c||mode==='p'||e.target.tagName!=='SELECT')return;
+  const [sd,sm,sy]=$$('select',c), v=[sd,sm,sy].map(x=>x.value);
+  if(v.every(Boolean)){
+    let d=+v[0], iso=hij2iso(+v[2],+v[1],d); if(!iso&&d===30){d=29;iso=hij2iso(+v[2],+v[1],29);sd.value='29'}
+    c.dataset.partial=''; hpSet(c,iso||'');
+  } else { c.dataset.partial=v.some(Boolean)?'1':''; hpSet(c,''); }
+  paintText(); saveDraft();
+});
+document.addEventListener('change',e=>{
+  const el=e.target; if(mode!=='s'||!el.matches||!el.matches('select.optsel')||el.value==='')return;
+  const i=+el.dataset.i, t=(S.ot[+el.value]||'').trim();
+  if(t){const cur=S.rows[i].p.replace(/\s+$/,''); S.rows[i].p=(cur?cur+'\n':'')+'• '+t}
+  el.value=''; paintText(); saveDraft();
+});
+document.addEventListener('click',e=>{
+  const b=e.target.closest&&e.target.closest('.hp-today'); if(!b||b.disabled)return;
+  const c=b.closest('.hp'); c.dataset.partial=''; hpSet(c,todayISO()); paintText(); saveDraft();
+});
+
+const rowText=i=>{const r=S.rows[i],l=[];S.ot.forEach((t,k)=>{if((r.o>>k)&1&&t.trim())l.push('• '+t.trim())});if(r.p.trim())l.push(r.p.trim());return l.join('\n')};
+const hasContent=i=>{const r=S.rows[i];return !!(r.p.trim()||(r.o&7)||r.d||r.sg.length)};
 const strokesOf=b=>b.dataset.key==='ps'?S.ps:S.rows[+b.dataset.i][b.dataset.key];
+const rowLocked=i=>mode==='s'&&S.rows[i].pg.length>0;
 function canSign(b){
   const k=b.dataset.key;
-  if(mode==='s') return k!=='pg';
-  return k==='pg'&&hasContent(+b.dataset.i);
+  if(mode==='s') return k==='ps'&&!b.closest('#paper');
+  return (k==='pg'||k==='sg')&&hasContent(+b.dataset.i);
 }
 
 /* ---------- paint ---------- */
 function setv(el,v){ if(el.value!==v) el.value=v; }
-function paint(){
-  $$('[data-k]:not([data-i])').forEach(el=>setv(el,S[el.dataset.k]||''));
-  $('#hj-pdt').textContent=hijri(S.pdt);
+function paintText(){
+  $$('[data-k]').forEach(el=>{
+    const i=el.dataset.i, v=i===undefined?S[el.dataset.k]:S.rows[+i][el.dataset.k]; setv(el,v||'');
+    const inPaper=!!el.closest('#paper'), inPr=!!el.closest('.principal');
+    const ro=el.dataset.k==='nt'?mode!=='p':(mode==='p'||inPaper||(i!==undefined&&rowLocked(+i)));
+    if(el.type==='date')el.disabled=ro; else el.readOnly=ro;
+  });
+  $$('[data-ot]').forEach(el=>{setv(el,S.ot[+el.dataset.ot]||''); el.readOnly=mode==='p'});
+  $$('select.optsel').forEach(sel=>{const i=+sel.dataset.i; [...sel.options].forEach(o=>{if(o.value!=='')o.textContent=S.ot[+o.value]||'(خيار فارغ)'}); sel.disabled=mode==='p'||rowLocked(i)});
+  $$('.ptext').forEach(e=>{e.textContent=rowText(+e.dataset.pi)});
+  $$('.entry textarea[data-k="p"]').forEach(t=>{t.style.height='auto';t.style.height=Math.max(84,t.scrollHeight+2)+'px'});
+  $('#f-nt').placeholder=mode==='p'?'اكتبوا ملاحظاتكم هنا (اختياري)':'تظهر هنا ملاحظات ولي الأمر بعد إرجاع النموذج';
+  $$('.hp').forEach(c=>{
+    const key=c.dataset.hp, i=key==='pdt'?undefined:+key, iso=key==='pdt'?S.pdt:S.rows[i].d, sel=$$('select',c);
+    if(iso){const h=hparts(Date.parse(iso+'T12:00:00Z')); const sy=sel[2]; if(![...sy.options].some(o=>o.value===String(h.y))){sy.add(new Option(h.y,h.y))} sel[0].value=String(h.d);sel[1].value=String(h.m);sy.value=String(h.y);c.dataset.partial=''}
+    else if(!c.dataset.partial){sel.forEach(x=>x.value='')}
+    const ro=mode==='p'||(key==='pdt'&&!!c.closest('#paper'))||(i!==undefined&&rowLocked(i)); sel.forEach(x=>x.disabled=ro); $('button',c).disabled=ro;
+  });
   $$('#rows tr').forEach(tr=>{
     const i=+tr.dataset.i,r=S.rows[i];
-    setv($('textarea',tr),r.p); const di=$('.cell-date',tr); setv(di,r.d);
     $('.hj',tr).textContent=hijri(r.d);
-    const chip=$('.chip',tr),on=$('.signed-on',tr);
-    if(hasContent(i)){ chip.hidden=false; if(r.pg.length){chip.className='chip done';chip.textContent='وقّع ولي الأمر'}else{chip.className='chip wait';chip.textContent='بانتظار ولي الأمر'} }
-    else {chip.hidden=true}
-    on.textContent=r.pg.length&&r.pd?('بتاريخ '+hijri(r.pd)):'';
+    $('.signed-on',tr).textContent=r.pg.length&&r.pd?('بتاريخ '+hijri(r.pd)):'';
   });
-  $$('.sig').forEach(b=>{
-    const st=strokesOf(b), ok=canSign(b); b.disabled=!ok; b.classList.toggle('has',st.length>0);
-    const slot=!ok&&!st.length&&b.dataset.key==='pg'&&mode==='s'; b.classList.toggle('slot',slot);
-    $('.hint',b).hidden=st.length>0; if(b.dataset.key==='pg')$('.hint',b).textContent=slot?'يوقّع ولي الأمر هنا':'اضغط للتوقيع'; const cv=$('canvas',b); sizeCv(cv); drawSig(cv,st);
+  $$('.chip').forEach(c=>{
+    const i=+c.dataset.ci,r=S.rows[i];
+    if(!hasContent(i)){c.hidden=true;return}
+    c.hidden=false;
+    if(r.pg.length&&r.sg.length){c.className='chip done';c.textContent='تم توقيع الطالبة وولي الأمر'}
+    else if(r.pg.length||r.sg.length){c.className='chip wait';c.textContent=r.sg.length?'بانتظار توقيع ولي الأمر':'بانتظار توقيع الطالبة'}
+    else {c.className='chip wait';c.textContent='بانتظار التوقيع'}
   });
 }
+function paintSigs(){
+  $$('.sig').forEach(b=>{
+    const st=strokesOf(b), ok=canSign(b), kk=b.dataset.key; b.disabled=!ok; b.classList.toggle('has',st.length>0);
+    const slot=!ok&&!st.length&&(kk==='pg'||kk==='sg')&&mode==='s'; b.classList.toggle('slot',slot);
+    $('.hint',b).hidden=st.length>0;
+    if(kk==='pg'||kk==='sg')$('.hint',b).textContent=slot?(kk==='pg'?'يوقّع ولي الأمر هنا':'توقّع الطالبة هنا'):'اضغط للتوقيع';
+    const cv=$('canvas',b); sizeCv(cv); drawSig(cv,st);
+  });
+}
+function paint(){paintText();paintSigs()}
 
-/* ---------- modes ---------- */
-function applyMode(){
+/* ---------- modes and views ---------- */
+let view='entry';
+function showView(v){
+  const p=mode==='p'; view=p?'form':v;
+  $('#v-entry').hidden=p||view!=='entry'; $('#v-form').hidden=!p&&view!=='form';
+  $$('#tabs button').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.v===view)));
+  $('#b-next').hidden=p||view!=='entry'; $('#b-send').hidden=!p&&view!=='form';
+  const signedBack=S.rows.some(r=>r.pg.length);
+  if(p){ $('#pill').textContent='ولي الأمر'; $('#b-t').textContent='نموذج غياب بعذر من إدارة المدرسة'; $('#b-s').textContent='اطّلعوا على الإجراءات الموضحة، ثم اضغطوا على خانة توقيع الطالبة لتوقّع، وعلى خانة ولي الأمر لتوقّعوا، واكتبوا ملاحظاتكم أسفل النموذج إن وجدت، ثم اضغطوا «إرسال التوقيعين للمدرسة».'; }
+  else if(view==='entry'){ $('#pill').textContent='صفحة الإدخال'; $('#b-t').textContent=signedBack?'أضيفي الإجراء التالي':'اكتبي بيانات الطالبة والإجراءات'; $('#b-s').textContent='اكتبي الإجراء المتخذ لكل مرحلة غياب، أو اختاري من قائمة الخيارات ثم عدّلي النص. واختاري تاريخه بالهجري. تُحفظ مسودتك على هذا الجهاز.'; }
+  else { $('#pill').textContent='النموذج'; $('#b-t').textContent=signedBack?'وصلك النموذج من ولي الأمر':'هذا ما سيصل إلى ولي الأمر'; $('#b-s').textContent=signedBack?'راجعي توقيعي الطالبة وولي الأمر، ثم اضغطي «حفظ نسخة PDF». بيانات مديرة المدرسة وتوقيعها تُدخل من صفحة الإدخال.':'تأكدي من اسم مديرة المدرسة وتوقيعها وتاريخها، ثم أرسلي النموذج. تُوقّع الطالبة وولي الأمر بعد فتحه، ثم يعود إليك.'; }
+  paint(); window.scrollTo(0,0);
+}
+function applyMode(v){
   const p=mode==='p';
   document.body.dataset.mode=mode;
   $$('.only-s').forEach(e=>e.hidden=p); $$('.only-p').forEach(e=>e.hidden=!p);
-  $$('[data-k]').forEach(el=>{ if(el.type==='date')el.disabled=p; else el.readOnly=p; });
   const signedBack=S.rows.some(r=>r.pg.length);
-  if(p){ $('#pill').textContent='ولي الأمر'; $('#b-t').textContent='نموذج من إدارة المدرسة'; $('#b-s').textContent='اطّلع على البيانات ثم اضغط على خانة توقيع ولي الأمر ووقّع بإصبعك. بعد ذلك اضغط «إرسال التوقيع للمدرسة».'; $('#b-send').textContent='إرسال التوقيع للمدرسة عبر واتساب'; }
-  else { $('#pill').textContent='المدرسة'; $('#b-t').textContent=signedBack?'وصلك النموذج من ولي الأمر':'املئي النموذج ووقّعي'; $('#b-s').textContent=signedBack?'راجعي توقيع ولي الأمر ثم اضغطي «حفظ نسخة PDF» أسفل الصفحة. يمكنك أيضاً إضافة الإجراء التالي وإرساله.':'اكتبي البيانات ووقّعي في خانتي الطالب والمدير، ثم أرسلي النموذج لولي الأمر. يُحفظ مسودتك تلقائياً على هذا الجهاز.'; $('#b-send').textContent='إرسال لولي الأمر عبر واتساب'; }
+  $('#b-send').textContent=p?'إرسال التوقيعين للمدرسة عبر واتساب':'إرسال لولي الأمر عبر واتساب';
   $('#b-pdf').className='btn'+(signedBack?'':' ghost');
-  paint();
+  showView(v||view);
 }
+$$('#tabs button').forEach(b=>b.onclick=()=>showView(b.dataset.v));
+$('#b-next').onclick=()=>showView('form');
+/* pointer tilt for the entry cards (mouse only, off while typing) */
+if(!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)){
+  $$('.entry .card,.entry .e-head').forEach(c=>{
+    c.addEventListener('pointermove',e=>{
+      if(e.pointerType!=='mouse'||c.matches(':focus-within'))return;
+      const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+      c.style.setProperty('--ry',(x*5).toFixed(2)+'deg'); c.style.setProperty('--rx',(-y*3.5).toFixed(2)+'deg');
+    });
+    const reset=()=>{c.style.setProperty('--rx','0deg');c.style.setProperty('--ry','0deg')};
+    c.addEventListener('pointerleave',reset); c.addEventListener('focusin',reset);
+  });
+}
+
 
 /* ---------- inputs ---------- */
 document.addEventListener('input',e=>{
-  const el=e.target; if(!el.dataset||!el.dataset.k||mode==='p')return;
+  const el=e.target;
+  if(el.dataset&&el.dataset.ot!==undefined){ if(mode==='s'){S.ot[+el.dataset.ot]=el.value;paintText();saveDraft()} return }
+  if(!el.dataset||!el.dataset.k)return;
+  if(el.dataset.k==='nt'){ if(mode!=='p')return; S.nt=el.value; return }
+  if(mode==='p')return;
   if(el.dataset.i!==undefined) S.rows[+el.dataset.i][el.dataset.k]=el.value; else S[el.dataset.k]=el.value;
-  if(el.type==='date'){ if(el.dataset.i!==undefined) $('.hj',el.closest('td')).textContent=hijri(el.value); else $('#hj-pdt').textContent=hijri(el.value); if(el.dataset.i!==undefined){const i=+el.dataset.i;paintChips(i)} }
-  if(el.dataset.k==='p'&&el.dataset.i!==undefined)paintChips(+el.dataset.i);
-  saveDraft();
+  paintText(); saveDraft();
 });
-function paintChips(){paint()}
 ['f-pp','f-sp'].forEach(id=>{const el=$('#'+id); const v=ls.get('abs-'+id); if(v)el.value=v; el.addEventListener('input',()=>ls.set('abs-'+id,el.value))});
 
 /* ---------- signature pad ---------- */
@@ -380,7 +614,7 @@ ov.addEventListener('pointerdown',e=>{if(e.target===ov)closePad()});
 document.addEventListener('click',e=>{
   const b=e.target.closest('.sig'); if(!b||b.disabled)return;
   const key=b.dataset.key,i=+b.dataset.i;
-  const title=key==='pg'?'توقيع ولي الأمر':key==='sg'?'توقيع الطالب':'توقيع مدير المدرسة';
+  const title=key==='pg'?'توقيع ولي الأمر':key==='sg'?'توقيع الطالبة':'توقيع مدير المدرسة';
   openPad(title,strokesOf(b),st=>{
     if(key==='ps')S.ps=st; else { S.rows[i][key]=st; if(key==='pg')S.rows[i].pd=st.length?todayISO():''; }
     paint(); saveDraft(); note('');
@@ -394,33 +628,26 @@ function phone(v){let d=(v||'').replace(/[^\d٠-٩]/g,'').replace(/[٠-٩]/g,x=>
 const baseUrl=()=>BASE||location.href.split('#')[0];
 async function send(){
   $('#out').hidden=true;
-  const who=S.n.trim();
   if(mode==='s'){
-    if(!who){note('اكتبي اسم الطالب/الطالبة أولاً.','err');$('#f-n').focus();return}
+    if(!S.n.trim()){note('اكتبي اسم الطالب/الطالبة أولاً.','err');showView('entry');$('#e-n').focus();return}
     if(!S.rows.some((_,i)=>hasContent(i))){note('اكتبي الإجراء المتخذ أو تاريخه في صف واحد على الأقل.','err');return}
     S.to='p'; S.sp=phone($('#f-sp').value);
-    note('جارٍ تجهيز رابط النموذج…');
-    let tok; try{tok=await enc(S)}catch(e){note('تعذّر تجهيز الرابط. حدّثي الصفحة وحاولي مرة أخرى.','err');return}
-    const url=baseUrl()+'#'+tok;
-    const msg='السلام عليكم ورحمة الله وبركاته\nولي أمر الطالب/ـة: '+who+'\nنأمل فتح رابط نموذج إجراءات الغياب بعذر، والاطلاع على البيانات والتوقيع في خانة ولي الأمر. بعد التوقيع اضغطوا «إرسال التوقيع للمدرسة عبر واتساب»، ثم أرفقوا ملف PDF الذي يتم تنزيله في المحادثة.\n'+url;
-    const to=phone($('#f-pp').value);
-    $('#out-msg').textContent=msg;
-    $('#out-wa').href='https://wa.me/'+to+'?text='+encodeURIComponent(msg);
-    $('#out-t').textContent='الرسالة جاهزة لولي الأمر';
   } else {
-    if(!S.rows.some(r=>r.pg.length)){note('وقّعي أولاً في خانة توقيع ولي الأمر.','err');return}
-    // لا نضع توقيع ولي الأمر أو بياناته في الرابط؛ نجهّز PDF محلياً ثم يرفقه المستخدم يدوياً في واتساب.
-    note('جارٍ تجهيز نسخة PDF…');
-    const ok=await savePdf();
-    if(!ok)return;
-    const msg='السلام عليكم ورحمة الله وبركاته\nتم التوقيع على نموذج إجراءات الغياب بعذر للطالب/ـة: '+who+'. أرفقت نسخة PDF من النموذج الموقّع.';
-    const to=phone(S.sp);
-    $('#out-msg').textContent=msg;
-    $('#out-wa').href='https://wa.me/'+to+'?text='+encodeURIComponent(msg);
-    $('#out-t').textContent='أرفقي ملف PDF في واتساب قبل الإرسال';
-    $('#out-note').textContent='بعد فتح واتساب، أرفقي ملف PDF الذي تم تنزيله ثم أرسلي الرسالة. لا ترسلي رابط النموذج الموقّع.';
+    const miss=S.rows.findIndex((r,i)=>hasContent(i)&&(!r.pg.length||!r.sg.length));
+    if(miss>=0){note('وقّعوا في خانتي الطالبة وولي الأمر في إجراء '+DAYS[miss]+' قبل الإرسال.','err');return}
+    S.to='s';
   }
-  $('#out-note').textContent=$('#out-note').textContent||'راجعي الرسالة، ثم افتحي واتساب وأرسليها.';
+  note('جارٍ تجهيز الرسالة…');
+  let tok; try{tok=await enc(S)}catch(e){note('تعذّر تجهيز الرابط. حدّثي الصفحة وحاولي مرة أخرى.','err');return}
+  const url=baseUrl()+'#'+tok, who=S.n.trim();
+  const msg = mode==='s'
+   ? 'السلام عليكم ورحمة الله وبركاته\nولي أمر الطالب/ـة: '+who+'\nنرسل لكم نموذج إجراءات الغياب بعذر. نأمل الاطلاع على الإجراءات، ثم توقيع الطالبة وولي الأمر في الخانتين المخصصتين، ثم الضغط على «إرسال التوقيعين للمدرسة».\n'+url+'\n\n'+SENDER+(S.s?'\n'+S.s:'')
+   : 'السلام عليكم ورحمة الله وبركاته\nتم الاطلاع على نموذج إجراءات الغياب بعذر للطالب/ـة: '+who+' والتوقيع عليه.\n'+url;
+  const to=mode==='s'?phone($('#f-pp').value):phone(S.sp);
+  $('#out-msg').textContent=msg;
+  $('#out-wa').href='https://wa.me/'+to+'?text='+encodeURIComponent(msg);
+  $('#out-t').textContent=mode==='s'?'الرسالة جاهزة لولي الأمر':'الرسالة جاهزة للمدرسة';
+  $('#out-note').textContent='';
   $('#out').hidden=false; $('#out').scrollIntoView({block:'center',behavior:'smooth'});
   note(''); saveDraft();
 }
@@ -430,13 +657,13 @@ $('#out-copy').onclick=async()=>{
   try{await navigator.clipboard.writeText(m);n.textContent='تم نسخ الرسالة. الصقيها في محادثة واتساب.'}catch(e){const r=document.createRange();r.selectNodeContents($('#out-msg'));const s=getSelection();s.removeAllRanges();s.addRange(r);n.textContent='حدّدت الرسالة. انسخيها يدوياً.'}
 };
 $('#b-new').onclick=()=>{ if($('#b-new').dataset.arm!=='1'){ $('#b-new').dataset.arm='1'; $('#b-new').textContent='اضغطي مرة أخرى لمسح كل البيانات'; setTimeout(()=>{$('#b-new').dataset.arm='';$('#b-new').textContent='نموذج جديد'},4000); return }
-  $('#b-new').dataset.arm='';$('#b-new').textContent='نموذج جديد'; S=blank(); mode='s'; ls.del('abs-draft2'); $('#out').hidden=true; try{history.replaceState(null,'',location.pathname+location.search)}catch(e){} applyMode(); note('بدأ نموذج جديد.','ok') };
+  $('#b-new').dataset.arm='';$('#b-new').textContent='نموذج جديد'; S=blank(); mode='s'; ls.del('abs-draft2'); $('#out').hidden=true; try{history.replaceState(null,'',location.pathname+location.search)}catch(e){} applyMode('entry'); note('بدأ نموذج جديد.','ok') };
 
 /* ---------- opening a form from a link or pasted text ---------- */
 async function loadToken(tok,quiet){
   try{
     const o=await dec(tok); if(!o)throw 0;
-    S=o; mode=o.to==='p'?'p':'s'; applyMode();
+    S=o; mode=o.to==='p'?'p':'s'; applyMode(mode==='p'||S.rows.some(r=>r.pg.length)?'form':'entry');
     if(mode==='s'){ if(o.sp){$('#f-sp').value=o.sp} saveDraft(); }
     if(!quiet) note('تم فتح النموذج.','ok'); return true;
   }catch(e){ if(!quiet) note('لم أستطع قراءة هذا الرابط. انسخي الرسالة كاملة كما وصلتك.','err'); return false }
@@ -449,16 +676,17 @@ window.addEventListener('hashchange',()=>{const t=tokenFrom('#'+location.hash.sl
 const esc=t=>String(t||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmtG=iso=>iso?iso.split('-').reverse().join('/'):'';
 const sigImg=(st,w,h)=>{ if(!st.length)return ''; const c=document.createElement('canvas'); c.width=w*2; c.height=h*2; drawSig(c,st); return '<img src="'+c.toDataURL('image/png')+'" style="width:'+w+'px;height:'+h+'px">'; };
-const dateCell=iso=>iso?fmtG(iso)+'<small>'+esc(hijri(iso))+'</small>':'';
+const dateCell=iso=>iso?esc(hijri(iso)):'';
 function sheetHTML(){
-  const rows=S.rows.map((r,i)=>'<tr><td class="dy">'+DAYS[i]+'</td><td class="pr">'+esc(r.p).replace(/\n/g,'<br>')+'</td><td>'+dateCell(r.d)+'</td><td>'+sigImg(r.sg,140,56)+'</td><td>'+sigImg(r.pg,140,56)+(r.pg.length&&r.pd?'<small>بتاريخ '+esc(hijri(r.pd))+'</small>':'')+'</td></tr>').join('');
+  const rows=S.rows.map((r,i)=>'<tr><td class="dy">'+DAYS[i]+'</td><td class="pr">'+esc(rowText(i)).replace(/\n/g,'<br>')+'</td><td>'+dateCell(r.d)+'</td><td>'+sigImg(r.sg,140,56)+'</td><td>'+sigImg(r.pg,140,56)+(r.pg.length&&r.pd?'<small>بتاريخ '+esc(hijri(r.pd))+'</small>':'')+'</td></tr>').join('');
   return '<div class="mh"><div class="mhr"><b>المملكة العربية السعودية</b><b>وزارة التعليم</b><div>المنطقة/المحافظة: '+esc(S.r)+'</div><div>المدرسة: '+esc(S.s)+'</div></div><img src="'+$('.logo').src+'" style="width:110px;height:auto"></div>'+
    '<h1>نموذج إجراءات الغياب بعذر</h1>'+
    '<div class="st"><div>اسم الطالب/الطالبة: '+esc(S.n)+'</div><div class="st2"><span>المرحلة: '+esc(S.st)+'</span><span>الصف: '+esc(S.g)+'</span></div></div>'+
    '<table><colgroup><col style="width:11%"><col style="width:30%"><col style="width:16%"><col style="width:20%"><col style="width:23%"></colgroup><thead><tr><th>عدد أيام الغياب</th><th>الإجراء المتخذ</th><th>تاريخ الإجراء</th><th>توقيع الطالب</th><th>توقيع ولي الأمر</th></tr></thead><tbody>'+rows+'</tbody></table>'+
-   '<div class="pp"><b>مدير/مديرة المدرسة</b><div>الاسم: '+esc(S.pn)+'</div><div>التوقيع: '+sigImg(S.ps,160,64)+'</div><div>التاريخ: '+fmtG(S.pdt)+(S.pdt?' &nbsp;الموافق '+esc(hijri(S.pdt)):'')+'</div></div>';
+   '<div class="pp"><b>مدير/مديرة المدرسة</b><div>الاسم: '+esc(S.pn)+'</div><div>التوقيع: '+sigImg(S.ps,160,64)+'</div><div>التاريخ: '+esc(hijri(S.pdt))+'</div></div>'+(S.nt.trim()?'<div class="pp"><b>ملاحظات ولي الأمر</b><div>'+esc(S.nt).replace(/\n/g,'<br>')+'</div></div>':'');
 }
 async function savePdf(){
+  if(!dlc)return;
   if(!window.html2canvas||!(window.jspdf&&window.jspdf.jsPDF)){note('تعذّر تحميل أداة إنشاء PDF. تأكدي من الاتصال وأعيدي المحاولة.','err');return}
   note('جارٍ إنشاء ملف PDF…');
   const el=document.createElement('div'); el.className='pdfs'; el.id='sheet'; el.innerHTML=sheetHTML(); document.body.appendChild(el);
@@ -470,22 +698,19 @@ async function savePdf(){
     const W=pdf.internal.pageSize.getWidth(),H=pdf.internal.pageSize.getHeight();
     let w=W,h=cv.height*W/cv.width; if(h>H){h=H;w=cv.width*H/cv.height}
     pdf.addImage(cv.toDataURL('image/jpeg',0.92),'JPEG',(W-w)/2,0,w,h);
-    const filename='نموذج غياب - '+(S.n.trim()||'طالب')+'.pdf';
-    if(dlc && typeof dlc.save==='function') await dlc.save({filename,data:pdf.output('blob')});
-    else pdf.save(filename);
-    note('تم تنزيل ملف PDF. أرفقيه في واتساب لإرسال التوقيع.','ok');
-    return true;
-  }catch(e){ note(e&&e.code==='declined'?'لم يُحفظ الملف.':'تعذّر إنشاء الملف. حاولي مرة أخرى.','err'); return false }
+    await dlc.save({filename:'نموذج غياب - '+(S.n.trim()||'طالب')+'.pdf',data:pdf.output('blob')});
+    note('تم حفظ الملف.','ok');
+  }catch(e){ note(e&&e.code==='declined'?'لم يُحفظ الملف.':'تعذّر إنشاء الملف. حاولي مرة أخرى.','err') }
   finally{el.remove()}
 }
-$('#b-pdf').onclick=savePdf;
-if(window.claude&&window.claude.use) window.claude.use('downloads').then(d=>{dlc=d;$('#b-pdf').hidden=!d}).catch(()=>{});
+$('#b-pdf').onclick=savePdf; $('#b-pdf-p').onclick=savePdf;
+if(window.claude&&window.claude.use) window.claude.use('downloads').then(d=>{dlc=d;$('#b-pdf').hidden=!d;$('#b-pdf-p').hidden=!d;$('#pdf-p-hint').hidden=!d}).catch(()=>{});
 
 /* ---------- start ---------- */
 (async()=>{
   const t=tokenFrom('#'+location.hash.slice(1));
   if(t && await loadToken(t,true)) return;
-  const d=ls.get('abs-draft2'); if(d){try{const o=JSON.parse(d); if(o&&Array.isArray(o.rows)&&o.rows.length===3){S=Object.assign(blank(),o)}}catch(e){}}
+  const d=ls.get('abs-draft2'); if(d){try{const o=JSON.parse(d); if(o&&Array.isArray(o.rows)&&o.rows.length===3){S=Object.assign(blank(),o); S.rows.forEach(r=>{r.o=(r.o|0)&7}); if(!Array.isArray(S.ot)||S.ot.length!==3)S.ot=DEF_OPTS.slice(); S.nt=S.nt||''}}catch(e){}}
   mode='s'; applyMode();
 })();
 applyMode();
