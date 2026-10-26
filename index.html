@@ -58,7 +58,8 @@ textarea:focus,.cell-date:focus{background:var(--paper-tint)}
 .hj{display:block;font-size:.8rem;color:var(--paper-head);min-height:1.2em;padding:2px}
 
 .sig{display:block;width:100%;position:relative;border:1.5px dashed var(--paper-line);border-radius:6px;background:transparent;padding:0;cursor:pointer;aspect-ratio:5/2;overflow:hidden;color:var(--paper-head)}
-.sig canvas{position:absolute;inset:0;width:100%;height:100%}
+.sig canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.sig{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .sig .hint{position:absolute;inset:0;display:grid;place-items:center;font-size:.85rem;font-weight:500}
 .sig:disabled{cursor:default;border-style:solid;border-color:transparent;background:transparent}
 .sig:disabled .hint{display:none}
@@ -103,7 +104,7 @@ details[open] summary{margin-bottom:10px}
 #padov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:grid;place-items:center;padding:16px;z-index:50}
 .padbox{background:var(--surface);color:var(--fg);border-radius:14px;padding:16px;width:min(560px,100%);display:flex;flex-direction:column;gap:12px}
 .padbox h3{margin:0}
-#pad-cv{width:100%;aspect-ratio:5/2;touch-action:none;border-radius:8px;border:1px solid var(--line);cursor:crosshair;
+#pad-cv{display:block;width:100%;aspect-ratio:5/2;touch-action:none;-webkit-user-select:none;user-select:none;border-radius:8px;border:1px solid var(--line);cursor:crosshair;
   background:#fff linear-gradient(transparent calc(78% - 1px),#c9d6d4 calc(78% - 1px),#c9d6d4 78%,transparent 78%)}
 
 @media (max-width:680px){
@@ -491,8 +492,10 @@ const strokesOf=b=>b.dataset.key==='ps'?S.ps:S.rows[+b.dataset.i][b.dataset.key]
 const rowLocked=i=>mode==='s'&&S.rows[i].pg.length>0;
 function canSign(b){
   const k=b.dataset.key;
-  if(mode==='s') return k==='ps'&&!b.closest('#paper');
-  return (k==='pg'||k==='sg')&&hasContent(+b.dataset.i);
+  /* School signs only in the entry screen; parent/student signatures are enabled only for rows with a recorded procedure. */
+  if(k==='ps') return mode==='s'&&!b.closest('#paper');
+  if(k==='pg'||k==='sg') return mode==='p'&&view==='form'&&!!rowText(+b.dataset.i).trim();
+  return false;
 }
 
 /* ---------- paint ---------- */
