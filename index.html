@@ -58,8 +58,7 @@ textarea:focus,.cell-date:focus{background:var(--paper-tint)}
 .hj{display:block;font-size:.8rem;color:var(--paper-head);min-height:1.2em;padding:2px}
 
 .sig{display:block;width:100%;position:relative;border:1.5px dashed var(--paper-line);border-radius:6px;background:transparent;padding:0;cursor:pointer;aspect-ratio:5/2;overflow:hidden;color:var(--paper-head)}
-.sig canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.sig{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.sig canvas{position:absolute;inset:0;width:100%;height:100%}
 .sig .hint{position:absolute;inset:0;display:grid;place-items:center;font-size:.85rem;font-weight:500}
 .sig:disabled{cursor:default;border-style:solid;border-color:transparent;background:transparent}
 .sig:disabled .hint{display:none}
@@ -104,7 +103,7 @@ details[open] summary{margin-bottom:10px}
 #padov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:grid;place-items:center;padding:16px;z-index:50}
 .padbox{background:var(--surface);color:var(--fg);border-radius:14px;padding:16px;width:min(560px,100%);display:flex;flex-direction:column;gap:12px}
 .padbox h3{margin:0}
-#pad-cv{display:block;width:100%;aspect-ratio:5/2;touch-action:none;-webkit-user-select:none;user-select:none;border-radius:8px;border:1px solid var(--line);cursor:crosshair;
+#pad-cv{width:100%;aspect-ratio:5/2;touch-action:none;border-radius:8px;border:1px solid var(--line);cursor:crosshair;
   background:#fff linear-gradient(transparent calc(78% - 1px),#c9d6d4 calc(78% - 1px),#c9d6d4 78%,transparent 78%)}
 
 @media (max-width:680px){
@@ -207,6 +206,18 @@ details[open] summary{margin-bottom:10px}
 .optcard{gap:0}
 .optcard .fld{margin-top:10px}
 
+.noproc{margin:14px 0;padding:18px;text-align:center;color:var(--paper-head);border:1.5px dashed var(--paper-line);border-radius:8px;font-weight:500}
+.backrow{display:flex;margin-bottom:14px}
+.trial{border-color:var(--warn);background:var(--warn-bg);align-items:center;justify-content:space-between;margin-bottom:14px}
+.trial span{color:var(--warn)}
+.check{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px;font-weight:500;font-size:.95rem}
+.bar .btn.back{width:auto;flex:none;background:var(--bg);box-shadow:none;transform:none;border:1px solid var(--line)}
+
+.receipt{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;font-weight:500}
+.receipt.ok{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.receipt.bad{border-color:var(--danger);color:var(--danger)}
+.receipt a{color:inherit;font-weight:700}
+
 .pdfs{position:fixed;left:-12000px;top:0;width:794px;min-height:1123px;box-sizing:border-box;padding:56px 52px;background:#fff;color:#1b2a29;direction:rtl;font-family:var(--font-body);font-size:16px;line-height:1.6}
 .pdfs .mh{display:flex;justify-content:space-between;align-items:center}
 .pdfs .mhr{display:flex;flex-direction:column;gap:4px}.pdfs .mhr b{color:#0e5f57}
@@ -222,8 +233,6 @@ details[open] summary{margin-bottom:10px}
 
 <main class="wrap">
   <div class="banner" id="banner"><span class="pill" id="pill"></span><div><b id="b-t"></b><span id="b-s"></span></div></div>
-
-  <div class="tabs only-s" id="tabs" role="tablist"><button type="button" role="tab" data-v="entry">١. إدخال البيانات</button><button type="button" role="tab" data-v="form">٢. النموذج والإرسال</button></div>
 
   <section class="entry only-s" id="v-entry">
     <div class="e-head">
@@ -258,6 +267,8 @@ details[open] summary{margin-bottom:10px}
   </section>
 
   <div id="v-form">
+  <div class="banner trial" id="trialbar" hidden><div><b>وضع التجربة: نسخة ولي الأمر</b><span>ما تفعلينه هنا لا يُحفظ في النموذج الأصلي. جرّبي التوقيع وزر الإرسال، ثم أنهي التجربة.</span></div><button type="button" class="btn ghost" id="b-endtrial">إنهاء التجربة</button></div>
+  <div class="backrow only-s"><button type="button" class="btn ghost back">← العودة إلى الإدخال</button></div>
   <article class="paper" id="paper">
     <header class="mast">
       <div class="mast-r">
@@ -285,6 +296,8 @@ details[open] summary{margin-bottom:10px}
       <tbody id="rows"></tbody>
     </table>
 
+    <p class="noproc" id="no-proc" hidden>لم يُسجَّل أي إجراء بعد. ارجعي إلى صفحة الإدخال وسجّلي الإجراء المتخذ ليُفعَّل التوقيع في صفه.</p>
+
     <section class="principal">
       <h2>مدير/مديرة المدرسة</h2>
       <label class="line"><span>الاسم:</span><input id="f-pn" data-k="pn" autocomplete="off"></label>
@@ -311,7 +324,7 @@ details[open] summary{margin-bottom:10px}
       <textarea class="paste" id="paste" placeholder="الصقي هنا الرسالة أو الرابط الذي وصلكِ"></textarea>
       <div class="row" style="margin-top:8px"><button type="button" class="btn ghost" id="b-import">فتح الرد</button></div>
     </details>
-    <div class="row"><button type="button" class="btn" id="b-pdf" hidden>حفظ نسخة PDF</button><button type="button" class="btn ghost" id="b-new">نموذج جديد</button></div>
+    <div class="row"><button type="button" class="btn" id="b-pdf" hidden>حفظ نسخة PDF</button><button type="button" class="btn ghost" id="b-gtest">اختبار ربط الاستقبال</button><button type="button" class="btn ghost" id="b-try">تجربة نسخة ولي الأمر</button><button type="button" class="btn ghost" id="b-new">نموذج جديد</button></div>
   </section>
 
   <section class="card only-p" id="card-p" hidden>
@@ -325,17 +338,19 @@ details[open] summary{margin-bottom:10px}
   </section>
 
   <div class="note" id="note" role="status" aria-live="polite"></div>
+  <section class="receipt" id="receipt" hidden aria-live="polite"></section>
   <section class="out" id="out" hidden>
     <b id="out-t">الرسالة جاهزة</b>
+    <ul class="check" id="out-check"></ul>
     <pre id="out-msg"></pre>
     <div class="row">
-      <a class="btn wa" id="out-wa" href="#" target="_blank" rel="noopener noreferrer">فتح واتساب وإرسال الرسالة</a>
+      <a class="btn wa" id="out-wa" href="#" target="_blank" rel="noopener noreferrer">فتح واتساب</a>
       <button type="button" class="btn ghost" id="out-copy">نسخ الرسالة</button>
     </div>
     <span class="note" id="out-note"></span>
   </section>
 
-  <div class="bar"><button type="button" class="btn" id="b-next">معاينة النموذج</button><button type="button" class="btn" id="b-send"></button></div>
+  <div class="bar"><button type="button" class="btn ghost back" id="b-back">العودة إلى الإدخال</button><button type="button" class="btn" id="b-next">معاينة النموذج</button><button type="button" class="btn" id="b-send"></button></div>
 </main>
 
 <div id="padov" hidden role="dialog" aria-modal="true" aria-labelledby="pad-title">
@@ -356,7 +371,10 @@ details[open] summary{margin-bottom:10px}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 (()=>{
-const BASE='https://claude.ai/artifact/XGQ15wpm4TEVrQY3R8rsZt';
+const BASE=''; /* GitHub Pages copy: links point to this page itself */
+const GAS_URL='https://script.google.com/macros/s/AKfycby_zhRYmSaI7n-d9mKugiBvlNXgtkOeaA4KGt178gLIj5gp-T3GiFvTyJilxjM31MI/exec';
+const GAS_TOKEN='11111222223333aaaabbbbccccdddddd'; /* must equal the TOKEN script property in Apps Script */
+const GAS_READY=()=>!!GAS_URL&&!!GAS_TOKEN&&GAS_TOKEN!=='CHANGE_ME_TOKEN';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const DAYS=['٣ أيام','٥ أيام','١٠ أيام'];
 const DEF_SCHOOL='ابتدائية الأبناء الخامسة للطفولة المبكرة', DEF_REGION='عسير', DEF_PRINCIPAL='نورة آل عازب';
@@ -372,14 +390,14 @@ const saveDraft=()=>{ if(mode==='s') ls.set('abs-draft2',JSON.stringify(S)); };
 /* ---------- packing the form into a short link token ---------- */
 const pk=st=>st.map(s=>{const o=[];let px=0,py=0;for(let i=0;i<s.length;i+=2){o.push(s[i]-px,s[i+1]-py);px=s[i];py=s[i+1]}return o});
 const upk=st=>(Array.isArray(st)?st:[]).slice(0,40).map(s=>{const o=[];let x=0,y=0;if(!Array.isArray(s))return o;for(let i=0;i+1<s.length;i+=2){x+=+s[i]||0;y+=+s[i+1]||0;o.push(Math.max(0,Math.min(400,x)),Math.max(0,Math.min(160,y)))}return o}).filter(s=>s.length>=2);
-const str=v=>typeof v==='string'?v.slice(0,300):'';
+const str=(v,n=300)=>typeof v==='string'?v.slice(0,n):'';
 const pack=s=>[1,s.to,s.sp,s.r,s.s,s.n,s.st,s.g,s.rows.map(x=>[x.p,x.d,pk(x.sg),pk(x.pg),x.pd,x.o|0]),s.pn,pk(s.ps),s.pdt,s.ot.every((t,i)=>t===DEF_OPTS[i])?[]:s.ot,s.nt];
 function unpack(a){
   if(!Array.isArray(a)||a[0]!==1||!Array.isArray(a[8]))return null;
   const o=blank(); o.to=a[1]==='s'?'s':'p'; o.sp=str(a[2]); o.r=str(a[3]); o.s=str(a[4]); o.n=str(a[5]); o.st=str(a[6]); o.g=str(a[7]);
-  o.rows=DAYS.map((_,i)=>{const x=a[8][i]||[];return {p:str(x[0]),d:str(x[1]),sg:upk(x[2]),pg:upk(x[3]),pd:str(x[4]),o:(+x[5]|0)&7}});
+  o.rows=DAYS.map((_,i)=>{const x=a[8][i]||[];return {p:str(x[0],1200),d:str(x[1]),sg:upk(x[2]),pg:upk(x[3]),pd:str(x[4]),o:(+x[5]|0)&7}});
   o.pn=str(a[9]); o.ps=upk(a[10]); o.pdt=str(a[11]);
-  o.ot=Array.isArray(a[12])&&a[12].length===3?a[12].map(str):DEF_OPTS.slice(); o.nt=typeof a[13]==='string'?a[13].slice(0,600):''; return o;
+  o.ot=Array.isArray(a[12])&&a[12].length===3?a[12].map(str):DEF_OPTS.slice(); o.nt=typeof a[13]==='string'?a[13].slice(0,600):''; return migrate(o);
 }
 const b64=u=>{let s='';for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
 const unb64=t=>{t=t.replace(/-/g,'+').replace(/_/g,'/');while(t.length%4)t+='=';const s=atob(t),u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u};
@@ -451,7 +469,7 @@ DAYS.forEach((d,i)=>{
   const c=document.createElement('div'); c.className='card erow'; c.dataset.i=i;
   let opts='<option value="">الخيارات: اختاري إجراءً جاهزاً لإضافته</option>'; for(let k=0;k<3;k++)opts+='<option value="'+k+'"></option>';
   c.innerHTML='<div class="dbadge"><b>'+NUMS[i]+'</b><span>أيام</span></div>'+
-   '<div class="eproc"><label class="fld">الإجراء المتخذ<textarea class="eta" data-i="'+i+'" data-k="p" placeholder="اكتبي الإجراء المتخذ"></textarea></label>'+
+   '<div class="eproc"><label class="fld">الإجراء المتخذ<textarea class="eta" data-i="'+i+'" data-k="p" maxlength="1200" placeholder="اكتبي الإجراء المتخذ"></textarea></label>'+
    '<select class="optsel" data-i="'+i+'" aria-label="الخيارات">'+opts+'</select></div>'+
    '<div class="edate"><span class="lab">تاريخ الإجراء (هجري)</span><div class="hp" data-hp="'+i+'"></div><span class="chip" data-ci="'+i+'"></span></div>';
   erows.appendChild(c);
@@ -478,7 +496,7 @@ document.addEventListener('change',e=>{
 document.addEventListener('change',e=>{
   const el=e.target; if(mode!=='s'||!el.matches||!el.matches('select.optsel')||el.value==='')return;
   const i=+el.dataset.i, t=(S.ot[+el.value]||'').trim();
-  if(t){const cur=S.rows[i].p.replace(/\s+$/,''); S.rows[i].p=(cur?cur+'\n':'')+'• '+t}
+  if(t&&!S.rows[i].p.includes('• '+t)){const cur=S.rows[i].p.replace(/\s+$/,''); S.rows[i].p=(cur?cur+'\n':'')+'• '+t}
   el.value=''; paintText(); saveDraft();
 });
 document.addEventListener('click',e=>{
@@ -486,16 +504,20 @@ document.addEventListener('click',e=>{
   const c=b.closest('.hp'); c.dataset.partial=''; hpSet(c,todayISO()); paintText(); saveDraft();
 });
 
+const migrate=o=>{o.rows.forEach(r=>{ if((r.o|0)&7){ const add=o.ot.map((t,k)=>((r.o>>k)&1&&t.trim())?'• '+t.trim():'').filter(l=>l&&!r.p.includes(l)); if(add.length)r.p=add.join('\n')+(r.p.trim()?'\n'+r.p.trim():''); } r.o=0 }); return o};
 const rowText=i=>{const r=S.rows[i],l=[];S.ot.forEach((t,k)=>{if((r.o>>k)&1&&t.trim())l.push('• '+t.trim())});if(r.p.trim())l.push(r.p.trim());return l.join('\n')};
-const hasContent=i=>{const r=S.rows[i];return !!(r.p.trim()||(r.o&7)||r.d||r.sg.length)};
+const hasContent=i=>!!rowText(i).trim();
+const procRows=()=>S.rows.map((_,i)=>i).filter(hasContent);
 const strokesOf=b=>b.dataset.key==='ps'?S.ps:S.rows[+b.dataset.i][b.dataset.key];
 const rowLocked=i=>mode==='s'&&S.rows[i].pg.length>0;
 function canSign(b){
   const k=b.dataset.key;
-  /* School signs only in the entry screen; parent/student signatures are enabled only for rows with a recorded procedure. */
   if(k==='ps') return mode==='s'&&!b.closest('#paper');
-  if(k==='pg'||k==='sg') return mode==='p'&&view==='form'&&!!rowText(+b.dataset.i).trim();
-  return false;
+  const i=+b.dataset.i, r=S.rows[i];
+  if(!hasContent(i))return false;
+  if(mode==='p')return true;
+  /* school side: a cell that is already signed is not overwritten; the other cell stays open until the row is complete */
+  return k==='pg'?!r.pg.length:!(r.sg.length&&r.pg.length);
 }
 
 /* ---------- paint ---------- */
@@ -510,6 +532,7 @@ function paintText(){
   $$('[data-ot]').forEach(el=>{setv(el,S.ot[+el.dataset.ot]||''); el.readOnly=mode==='p'});
   $$('select.optsel').forEach(sel=>{const i=+sel.dataset.i; [...sel.options].forEach(o=>{if(o.value!=='')o.textContent=S.ot[+o.value]||'(خيار فارغ)'}); sel.disabled=mode==='p'||rowLocked(i)});
   $$('.ptext').forEach(e=>{e.textContent=rowText(+e.dataset.pi)});
+  $('#no-proc').hidden=procRows().length>0;
   $$('.entry textarea[data-k="p"]').forEach(t=>{t.style.height='auto';t.style.height=Math.max(84,t.scrollHeight+2)+'px'});
   $('#f-nt').placeholder=mode==='p'?'اكتبوا ملاحظاتكم هنا (اختياري)':'تظهر هنا ملاحظات ولي الأمر بعد إرجاع النموذج';
   $$('.hp').forEach(c=>{
@@ -544,16 +567,18 @@ function paintSigs(){
 function paint(){paintText();paintSigs()}
 
 /* ---------- modes and views ---------- */
-let view='entry';
+let view='entry', trial=null;
 function showView(v){
   const p=mode==='p'; view=p?'form':v;
   $('#v-entry').hidden=p||view!=='entry'; $('#v-form').hidden=!p&&view!=='form';
-  $$('#tabs button').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.v===view)));
+  $('#b-back').hidden=p||view!=='form'; $('#trialbar').hidden=!(trial&&p);
   $('#b-next').hidden=p||view!=='entry'; $('#b-send').hidden=!p&&view!=='form';
   const signedBack=S.rows.some(r=>r.pg.length);
+  const np=procRows().length, nsg=S.rows.filter((r,i)=>hasContent(i)&&r.sg.length).length, npg=S.rows.filter((r,i)=>hasContent(i)&&r.pg.length).length;
+  const receipt='وصل: توقيع الطالبة '+nsg+' من '+np+'، وتوقيع ولي الأمر '+npg+' من '+np+(S.nt.trim()?'، وملاحظات ولي الأمر.':'.');
   if(p){ $('#pill').textContent='ولي الأمر'; $('#b-t').textContent='نموذج غياب بعذر من إدارة المدرسة'; $('#b-s').textContent='اطّلعوا على الإجراءات الموضحة، ثم اضغطوا على خانة توقيع الطالبة لتوقّع، وعلى خانة ولي الأمر لتوقّعوا، واكتبوا ملاحظاتكم أسفل النموذج إن وجدت، ثم اضغطوا «إرسال التوقيعين للمدرسة».'; }
   else if(view==='entry'){ $('#pill').textContent='صفحة الإدخال'; $('#b-t').textContent=signedBack?'أضيفي الإجراء التالي':'اكتبي بيانات الطالبة والإجراءات'; $('#b-s').textContent='اكتبي الإجراء المتخذ لكل مرحلة غياب، أو اختاري من قائمة الخيارات ثم عدّلي النص. واختاري تاريخه بالهجري. تُحفظ مسودتك على هذا الجهاز.'; }
-  else { $('#pill').textContent='النموذج'; $('#b-t').textContent=signedBack?'وصلك النموذج من ولي الأمر':'هذا ما سيصل إلى ولي الأمر'; $('#b-s').textContent=signedBack?'راجعي توقيعي الطالبة وولي الأمر، ثم اضغطي «حفظ نسخة PDF». بيانات مديرة المدرسة وتوقيعها تُدخل من صفحة الإدخال.':'تأكدي من اسم مديرة المدرسة وتوقيعها وتاريخها، ثم أرسلي النموذج. تُوقّع الطالبة وولي الأمر بعد فتحه، ثم يعود إليك.'; }
+  else { $('#pill').textContent='معاينة'; $('#b-t').textContent=signedBack?'وصلك النموذج من ولي الأمر':'معاينة النموذج قبل الإرسال'; $('#b-s').textContent=signedBack?(receipt+' ثم اضغطي «حفظ نسخة PDF». يمكنك العودة للإدخال لإضافة الإجراء التالي.'):'هذا ما سيراه ولي الأمر: النموذج كاملاً بصفوف ٣ و٥ و١٠ أيام. يُفعَّل التوقيع في الصفوف المسجَّل فيها إجراء فقط. يمكنك العودة إلى الإدخال دون فقدان بياناتك.'; }
   paint(); window.scrollTo(0,0);
 }
 function applyMode(v){
@@ -561,11 +586,11 @@ function applyMode(v){
   document.body.dataset.mode=mode;
   $$('.only-s').forEach(e=>e.hidden=p); $$('.only-p').forEach(e=>e.hidden=!p);
   const signedBack=S.rows.some(r=>r.pg.length);
-  $('#b-send').textContent=p?'إرسال التوقيعين للمدرسة عبر واتساب':'إرسال لولي الأمر عبر واتساب';
+  $('#b-send').textContent=p?'إرسال التوقيعين للمدرسة':'إرسال لولي الأمر عبر واتساب';
   $('#b-pdf').className='btn'+(signedBack?'':' ghost');
   showView(v||view);
 }
-$$('#tabs button').forEach(b=>b.onclick=()=>showView(b.dataset.v));
+$$('.back').forEach(b=>b.onclick=()=>showView('entry'));
 $('#b-next').onclick=()=>showView('form');
 /* pointer tilt for the entry cards (mouse only, off while typing) */
 if(!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)){
@@ -631,42 +656,60 @@ function phone(v){let d=(v||'').replace(/[^\d٠-٩]/g,'').replace(/[٠-٩]/g,x=>
 const baseUrl=()=>BASE||location.href.split('#')[0];
 async function send(){
   $('#out').hidden=true;
+  const idx=procRows();
   if(mode==='s'){
     if(!S.n.trim()){note('اكتبي اسم الطالب/الطالبة أولاً.','err');showView('entry');$('#e-n').focus();return}
-    if(!S.rows.some((_,i)=>hasContent(i))){note('اكتبي الإجراء المتخذ أو تاريخه في صف واحد على الأقل.','err');return}
+    if(!idx.length){note('سجّلي الإجراء المتخذ في صف واحد على الأقل من صفحة الإدخال.','err');return}
     S.to='p'; S.sp=phone($('#f-sp').value);
   } else {
-    const miss=S.rows.findIndex((r,i)=>hasContent(i)&&(!r.pg.length||!r.sg.length));
-    if(miss>=0){note('وقّعوا في خانتي الطالبة وولي الأمر في إجراء '+DAYS[miss]+' قبل الإرسال.','err');return}
+    if(!idx.length){note('لا توجد إجراءات مسجلة في هذا النموذج.','err');return}
+    const miss=idx.find(i=>!S.rows[i].sg.length||!S.rows[i].pg.length);
+    if(miss!==undefined){note('وقّعوا في خانتي الطالبة وولي الأمر في إجراء '+DAYS[miss]+' قبل الإرسال.','err');return}
     S.to='s';
   }
-  note('جارٍ تجهيز الرسالة…');
-  let tok; try{tok=await enc(S)}catch(e){note('تعذّر تجهيز الرابط. حدّثي الصفحة وحاولي مرة أخرى.','err');return}
+  let upl=null; $('#receipt').hidden=true;
+  if(mode==='p'&&GAS_READY()){ $('#b-send').disabled=true; try{upl=await uploadToSchool()}finally{$('#b-send').disabled=false} showReceipt(upl,false); note(''); }
+  note('جارٍ تجهيز الرسالة والتحقق من محتواها…');
+  let tok,back; try{tok=await enc(S); back=await dec(tok)}catch(e){note('تعذّر تجهيز الرابط. حدّثي الصفحة وحاولي مرة أخرى.','err');return}
+  const J=JSON.stringify;
+  const same=!!back&&back.n===S.n&&back.nt===S.nt&&idx.every(i=>{const a=S.rows[i],c=back.rows[i];return a.p===c.p&&a.d===c.d&&J(a.sg)===J(c.sg)&&J(a.pg)===J(c.pg)&&a.pd===c.pd});
+  if(!same){note('تعذّر التحقق من أن التوقيعين والبيانات داخل الرابط كاملة (قد يكون النص طويلاً جداً). لم يُجهَّز شيء للإرسال.','err');return}
   const url=baseUrl()+'#'+tok, who=S.n.trim();
   const msg = mode==='s'
    ? 'السلام عليكم ورحمة الله وبركاته\nولي أمر الطالب/ـة: '+who+'\nنرسل لكم نموذج إجراءات الغياب بعذر. نأمل الاطلاع على الإجراءات، ثم توقيع الطالبة وولي الأمر في الخانتين المخصصتين، ثم الضغط على «إرسال التوقيعين للمدرسة».\n'+url+'\n\n'+SENDER+(S.s?'\n'+S.s:'')
    : 'السلام عليكم ورحمة الله وبركاته\nتم الاطلاع على نموذج إجراءات الغياب بعذر للطالب/ـة: '+who+' والتوقيع عليه.\n'+url;
   const to=mode==='s'?phone($('#f-pp').value):phone(S.sp);
+  const nsg=idx.filter(i=>S.rows[i].sg.length).length, npg=idx.filter(i=>S.rows[i].pg.length).length, ok=n=>n>0?'✓ ':'— ';
+  const items=['✓ بيانات الطالبة: '+who,'✓ الإجراءات المسجلة: '+idx.length,ok(nsg)+'توقيع الطالبة: '+nsg+' من '+idx.length,ok(npg)+'توقيع ولي الأمر: '+npg+' من '+idx.length];
+  if(S.nt.trim())items.push('✓ ملاحظات ولي الأمر');
+  $('#out-check').innerHTML=items.map(t=>'<li>'+esc(t)+'</li>').join('');
   $('#out-msg').textContent=msg;
   $('#out-wa').href='https://wa.me/'+to+'?text='+encodeURIComponent(msg);
-  $('#out-t').textContent=mode==='s'?'الرسالة جاهزة لولي الأمر':'الرسالة جاهزة للمدرسة';
-  $('#out-note').textContent='';
-  $('#out').hidden=false; $('#out').scrollIntoView({block:'center',behavior:'smooth'});
+  $('#out-t').textContent=mode==='s'?'الرسالة جاهزة لولي الأمر. لم تُرسل بعد':'الرسالة جاهزة للمدرسة. لم تُرسل بعد';
+  $('#out-note').textContent=mode==='s'?'اضغطي «فتح واتساب»، ثم اضغطي زر الإرسال داخل واتساب نفسه، وتأكدي من ظهور الرسالة في المحادثة.':'اضغطوا «فتح واتساب»، ثم أرسلوا الرسالة إلى المدرسة من داخل واتساب، وتأكدوا من ظهورها في المحادثة.';
+  if(upl&&upl.ok)$('#out-t').textContent='إشعار المدرسة عبر واتساب (اختياري). النموذج وصل فعلاً';
+  else if(upl)$('#out-t').textContent='لم يصل تلقائياً. أرسلوا هذه الرسالة إلى المدرسة عبر واتساب';
+  $('#out').hidden=false; if(!upl)$('#out').scrollIntoView({block:'center',behavior:'smooth'});
   note(''); saveDraft();
 }
 $('#b-send').onclick=send;
+$('#b-try').onclick=()=>{
+  if(!procRows().length){note('سجّلي الإجراء المتخذ في صف واحد على الأقل أولاً.','err');return}
+  trial=JSON.stringify(S); mode='p'; note(''); $('#out').hidden=true; applyMode('form');
+};
+$('#b-endtrial').onclick=()=>{ if(!trial)return; S=JSON.parse(trial); trial=null; mode='s'; $('#out').hidden=true; applyMode('form'); note('انتهت التجربة وعادت بياناتك كما كانت.','ok') };
 $('#out-copy').onclick=async()=>{
   const m=$('#out-msg').textContent,n=$('#out-note');
   try{await navigator.clipboard.writeText(m);n.textContent='تم نسخ الرسالة. الصقيها في محادثة واتساب.'}catch(e){const r=document.createRange();r.selectNodeContents($('#out-msg'));const s=getSelection();s.removeAllRanges();s.addRange(r);n.textContent='حدّدت الرسالة. انسخيها يدوياً.'}
 };
 $('#b-new').onclick=()=>{ if($('#b-new').dataset.arm!=='1'){ $('#b-new').dataset.arm='1'; $('#b-new').textContent='اضغطي مرة أخرى لمسح كل البيانات'; setTimeout(()=>{$('#b-new').dataset.arm='';$('#b-new').textContent='نموذج جديد'},4000); return }
-  $('#b-new').dataset.arm='';$('#b-new').textContent='نموذج جديد'; S=blank(); mode='s'; ls.del('abs-draft2'); $('#out').hidden=true; try{history.replaceState(null,'',location.pathname+location.search)}catch(e){} applyMode('entry'); note('بدأ نموذج جديد.','ok') };
+  $('#b-new').dataset.arm='';$('#b-new').textContent='نموذج جديد'; trial=null; S=blank(); mode='s'; ls.del('abs-draft2'); $('#out').hidden=true; try{history.replaceState(null,'',location.pathname+location.search)}catch(e){} applyMode('entry'); note('بدأ نموذج جديد.','ok') };
 
 /* ---------- opening a form from a link or pasted text ---------- */
 async function loadToken(tok,quiet){
   try{
     const o=await dec(tok); if(!o)throw 0;
-    S=o; mode=o.to==='p'?'p':'s'; applyMode(mode==='p'||S.rows.some(r=>r.pg.length)?'form':'entry');
+    trial=null; S=o; mode=o.to==='p'?'p':'s'; applyMode(mode==='p'||S.rows.some(r=>r.pg.length)?'form':'entry');
     if(mode==='s'){ if(o.sp){$('#f-sp').value=o.sp} saveDraft(); }
     if(!quiet) note('تم فتح النموذج.','ok'); return true;
   }catch(e){ if(!quiet) note('لم أستطع قراءة هذا الرابط. انسخي الرسالة كاملة كما وصلتك.','err'); return false }
@@ -688,10 +731,8 @@ function sheetHTML(){
    '<table><colgroup><col style="width:11%"><col style="width:30%"><col style="width:16%"><col style="width:20%"><col style="width:23%"></colgroup><thead><tr><th>عدد أيام الغياب</th><th>الإجراء المتخذ</th><th>تاريخ الإجراء</th><th>توقيع الطالب</th><th>توقيع ولي الأمر</th></tr></thead><tbody>'+rows+'</tbody></table>'+
    '<div class="pp"><b>مدير/مديرة المدرسة</b><div>الاسم: '+esc(S.pn)+'</div><div>التوقيع: '+sigImg(S.ps,160,64)+'</div><div>التاريخ: '+esc(hijri(S.pdt))+'</div></div>'+(S.nt.trim()?'<div class="pp"><b>ملاحظات ولي الأمر</b><div>'+esc(S.nt).replace(/\n/g,'<br>')+'</div></div>':'');
 }
-async function savePdf(){
-  if(!dlc)return;
-  if(!window.html2canvas||!(window.jspdf&&window.jspdf.jsPDF)){note('تعذّر تحميل أداة إنشاء PDF. تأكدي من الاتصال وأعيدي المحاولة.','err');return}
-  note('جارٍ إنشاء ملف PDF…');
+async function makePdfBlob(){
+  if(!window.html2canvas||!(window.jspdf&&window.jspdf.jsPDF))throw new Error('أداة إنشاء PDF لم تُحمَّل');
   const el=document.createElement('div'); el.className='pdfs'; el.id='sheet'; el.innerHTML=sheetHTML(); document.body.appendChild(el);
   try{
     if(document.fonts&&document.fonts.ready)await document.fonts.ready;
@@ -701,19 +742,84 @@ async function savePdf(){
     const W=pdf.internal.pageSize.getWidth(),H=pdf.internal.pageSize.getHeight();
     let w=W,h=cv.height*W/cv.width; if(h>H){h=H;w=cv.width*H/cv.height}
     pdf.addImage(cv.toDataURL('image/jpeg',0.92),'JPEG',(W-w)/2,0,w,h);
-    await dlc.save({filename:'نموذج غياب - '+(S.n.trim()||'طالب')+'.pdf',data:pdf.output('blob')});
+    return pdf.output('blob');
+  } finally{el.remove()}
+}
+async function savePdf(){
+  if(!dlc)return;
+  note('جارٍ إنشاء ملف PDF…');
+  try{
+    const blob=await makePdfBlob();
+    await dlc.save({filename:'نموذج غياب - '+(S.n.trim()||'طالب')+'.pdf',data:blob});
     note('تم حفظ الملف.','ok');
   }catch(e){ note(e&&e.code==='declined'?'لم يُحفظ الملف.':'تعذّر إنشاء الملف. حاولي مرة أخرى.','err') }
-  finally{el.remove()}
 }
+
+/* ---------- delivery to the school's receiving service (Google Apps Script) ---------- */
+async function sha(t){
+  try{const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('').slice(0,24)}
+  catch(e){let h=0;for(const c of t)h=(h*31+c.charCodeAt(0))|0;return 'h'+Math.abs(h)}
+}
+const b2b64=blob=>new Promise((res,rej)=>{const f=new FileReader();f.onload=()=>res(String(f.result).split(',')[1]||'');f.onerror=()=>rej(new Error('read'));f.readAsDataURL(blob)});
+async function postGas(payload){
+  const ctl=new AbortController(), to=setTimeout(()=>ctl.abort(),60000); let res;
+  try{ res=await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),signal:ctl.signal,redirect:'follow'}) }
+  catch(e){ clearTimeout(to); return {ok:false,stage:'network',error:e&&e.name==='AbortError'?'انتهت مهلة الاتصال بخدمة الاستقبال':'تعذّر الاتصال بخدمة الاستقبال (تأكدي من الإنترنت ومن نشر الخدمة بوصول Anyone)'} }
+  clearTimeout(to);
+  let txt=''; try{txt=await res.text()}catch(e){return {ok:false,stage:'read',error:'لم يصل ردّ قابل للقراءة من الخدمة'}}
+  let j; try{j=JSON.parse(txt)}catch(e){return {ok:false,stage:'parse',error:'ردّ غير متوقع من الخدمة. غالباً النشر غير مضبوط أو الكود غير مطابق'}}
+  if(!j||j.ok!==true)return {ok:false,stage:'server',error:(j&&j.error)?('رفضت الخدمة الطلب: '+j.error):'رفضت الخدمة الطلب'};
+  return j;
+}
+async function uploadToSchool(){
+  if(!GAS_READY())return {ok:false,stage:'config',error:'رمز الربط غير مضبوط في الملف'};
+  note('جارٍ إنشاء ملف PDF…');
+  let blob; try{blob=await makePdfBlob()}catch(e){return {ok:false,stage:'pdf',error:'تعذّر إنشاء ملف PDF'}}
+  note('جارٍ إرسال النموذج إلى المدرسة…');
+  const idx=procRows();
+  const payload={action:'submit',token:GAS_TOKEN,formId:await sha(JSON.stringify(pack(S))),
+    studentName:S.n.trim(),grade:S.g.trim(),stage:S.st.trim(),school:S.s,region:S.r,
+    rows:idx.map(i=>({days:DAYS[i],procedure:rowText(i),dateHijri:hijri(S.rows[i].d),studentSigned:S.rows[i].sg.length>0,parentSigned:S.rows[i].pg.length>0,parentSignedOn:hijri(S.rows[i].pd)})),
+    absenceDates:idx.map(i=>DAYS[i]+': '+(hijri(S.rows[i].d)||'—')).join(' | '),
+    parentNotes:S.nt.trim(),clientTime:new Date().toISOString(),receivedHijri:hijri(todayISO()),
+    filename:'نموذج غياب - '+(S.n.trim()||'طالبة')+'.pdf',size:blob.size,pdfBase64:await b2b64(blob)};
+  const r=await postGas(payload);
+  if(r.ok&&(!r.fileUrl||!r.row||r.size!==blob.size))return {ok:false,stage:'verify',error:'ردّ الخدمة لا يؤكد حفظ الملف كاملاً'};
+  return r;
+}
+function showReceipt(r,school){
+  const box=$('#receipt'); box.innerHTML=''; box.hidden=false; box.className='receipt '+(r.ok?'ok':'bad');
+  const add=(tag,t)=>{const e=document.createElement(tag);e.textContent=t;box.appendChild(e);return e};
+  if(r.ok){
+    add('b',school?'✓ نجح اختبار الربط: حُفظ الملف في المجلد الخاص وسُجّل في الجدول':'✓ وصل النموذج إلى المدرسة');
+    add('span','رقم الاستلام: '+r.row+(r.duplicate?' (وصل سابقاً ولم يُكرَّر)':'')+(r.receivedAt?' · وقت الاستلام: '+r.receivedAt:''));
+    if(school&&/^https:\/\/(drive|docs)\.google\.com\//.test(r.fileUrl||'')){const a=add('a','فتح الملف في Drive (يفتح لحسابك فقط)');a.href=r.fileUrl;a.target='_blank';a.rel='noopener noreferrer'}
+  } else {
+    add('b',school?'✗ فشل اختبار الربط':'✗ لم يصل النموذج إلى المدرسة تلقائياً');
+    add('span','السبب: '+(r.error||'غير معروف')+(school?'':'. أرسلوا الرسالة عبر واتساب بالأسفل.'));
+  }
+  box.scrollIntoView({block:'center',behavior:'smooth'});
+}
+async function testGas(){
+  if(!GAS_READY()){note('ضعي الرمز السري في الملف أولاً (GAS_TOKEN).','err');return}
+  if(!(window.jspdf&&window.jspdf.jsPDF)){note('أداة PDF لم تُحمَّل.','err');return}
+  note('جارٍ إرسال ملف اختبار إلى الخدمة…');
+  const doc=new window.jspdf.jsPDF({unit:'pt',format:'a4'}); doc.text('TEST - absence form receiver - '+new Date().toISOString(),40,60);
+  const blob=doc.output('blob');
+  const r=await postGas({action:'submit',test:true,token:GAS_TOKEN,formId:'test-'+Date.now(),studentName:'اختبار الربط',grade:'-',stage:'-',school:S.s,region:S.r,rows:[],absenceDates:'-',parentNotes:'',clientTime:new Date().toISOString(),receivedHijri:hijri(todayISO()),filename:'test.pdf',size:blob.size,pdfBase64:await b2b64(blob)});
+  note(''); showReceipt(r.ok&&(!r.fileUrl||!r.row||r.size!==blob.size)?{ok:false,error:'ردّ الخدمة لا يؤكد حفظ الملف كاملاً'}:r,true);
+}
+$('#b-gtest').onclick=testGas;
 $('#b-pdf').onclick=savePdf; $('#b-pdf-p').onclick=savePdf;
-if(window.claude&&window.claude.use) window.claude.use('downloads').then(d=>{dlc=d;$('#b-pdf').hidden=!d;$('#b-pdf-p').hidden=!d;$('#pdf-p-hint').hidden=!d}).catch(()=>{});
+const showPdfBtns=d=>{dlc=d;$('#b-pdf').hidden=!d;$('#b-pdf-p').hidden=!d;$('#pdf-p-hint').hidden=!d};
+if(window.claude&&window.claude.use) window.claude.use('downloads').then(showPdfBtns).catch(()=>{});
+else showPdfBtns({save:async({filename,data})=>{const u=URL.createObjectURL(data),a=document.createElement('a');a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);return {status:'saved'}}});
 
 /* ---------- start ---------- */
 (async()=>{
   const t=tokenFrom('#'+location.hash.slice(1));
   if(t && await loadToken(t,true)) return;
-  const d=ls.get('abs-draft2'); if(d){try{const o=JSON.parse(d); if(o&&Array.isArray(o.rows)&&o.rows.length===3){S=Object.assign(blank(),o); S.rows.forEach(r=>{r.o=(r.o|0)&7}); if(!Array.isArray(S.ot)||S.ot.length!==3)S.ot=DEF_OPTS.slice(); S.nt=S.nt||''}}catch(e){}}
+  const d=ls.get('abs-draft2'); if(d){try{const o=JSON.parse(d); if(o&&Array.isArray(o.rows)&&o.rows.length===3){S=Object.assign(blank(),o); S.rows.forEach(r=>{r.o=(r.o|0)&7}); if(!Array.isArray(S.ot)||S.ot.length!==3)S.ot=DEF_OPTS.slice(); S.nt=S.nt||''; migrate(S)}}catch(e){}}
   mode='s'; applyMode();
 })();
 applyMode();
