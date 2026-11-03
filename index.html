@@ -680,7 +680,9 @@ async function send(){
   const J=JSON.stringify;
   const same=!!back&&back.n===S.n&&back.nt===S.nt&&idx.every(i=>{const a=S.rows[i],c=back.rows[i];return a.p===c.p&&a.d===c.d&&J(a.sg)===J(c.sg)&&J(a.pg)===J(c.pg)&&a.pd===c.pd});
   if(!same){note('تعذّر التحقق من أن التوقيعين والبيانات داخل الرابط كاملة (قد يكون النص طويلاً جداً). لم يُجهَّز شيء للإرسال.','err');return}
-  const url=baseUrl()+'#'+tok, who=S.n.trim();
+  let sid=''; if(mode==='s'&&GAS_READY()){ note('جارٍ تجهيز الرابط القصير…'); sid=await shorten(tok); }
+  const url=baseUrl()+'#'+(sid?'k'+sid:tok), who=S.n.trim();
+  const shortNote=mode==='s'?(sid?'الرابط قصير ومحفوظ في سجل المدرسة الخاص.':(GAS_READY()?'تعذّر تقصير الرابط الآن، فاستُخدم الرابط الكامل وهو يعمل أيضاً.':'')):'';
   const msg = mode==='s'
    ? 'السلام عليكم ورحمة الله وبركاته\nولي أمر الطالب/ـة: '+who+'\nنرسل لكم نموذج إجراءات الغياب بعذر. نأمل الاطلاع على الإجراءات، ثم توقيع الطالبة وولي الأمر في الخانتين المخصصتين، ثم الضغط على «إرسال التوقيعين للمدرسة».\n'+url+'\n\n'+SENDER+(S.s?'\n'+S.s:'')
    : 'السلام عليكم ورحمة الله وبركاته\nتم الاطلاع على نموذج إجراءات الغياب بعذر للطالب/ـة: '+who+' والتوقيع عليه.\n'+url;
@@ -693,6 +695,7 @@ async function send(){
   $('#out-wa').href='https://wa.me/'+to+'?text='+encodeURIComponent(msg);
   $('#out-t').textContent=mode==='s'?'الرسالة جاهزة لولي الأمر. لم تُرسل بعد':'الرسالة جاهزة للمدرسة. لم تُرسل بعد';
   $('#out-note').textContent=mode==='s'?'اضغطي «فتح واتساب»، ثم اضغطي زر الإرسال داخل واتساب نفسه، وتأكدي من ظهور الرسالة في المحادثة.':'اضغطوا «فتح واتساب»، ثم أرسلوا الرسالة إلى المدرسة من داخل واتساب، وتأكدوا من ظهورها في المحادثة.';
+  if(shortNote)$('#out-note').textContent+=' '+shortNote;
   if(upl&&upl.ok)$('#out-t').textContent='إشعار المدرسة عبر واتساب (اختياري). النموذج وصل فعلاً';
   else if(upl)$('#out-t').textContent='لم يصل تلقائياً. أرسلوا هذه الرسالة إلى المدرسة عبر واتساب';
   $('#out').hidden=false; if(!upl)$('#out').scrollIntoView({block:'center',behavior:'smooth'});
@@ -720,9 +723,9 @@ async function loadToken(tok,quiet){
     if(!quiet) note('تم فتح النموذج.','ok'); return true;
   }catch(e){ if(!quiet) note('لم أستطع قراءة هذا الرابط. انسخي الرسالة كاملة كما وصلتك.','err'); return false }
 }
-const doImport=id=>async()=>{const t=tokenFrom($(id).value); if(!t){note('لم أجد رابط النموذج في النص الملصق.','err');return} await loadToken(t)};
+const doImport=id=>async()=>{const k=shortFrom($(id).value); if(k){ if(await loadShort(k)) note('تم فتح النموذج.','ok'); return } const t=tokenFrom($(id).value); if(!t){note('لم أجد رابط النموذج في النص الملصق.','err');return} await loadToken(t)};
 $('#b-import').onclick=doImport('#paste'); $('#b-import-p').onclick=doImport('#paste-p');
-window.addEventListener('hashchange',()=>{const t=tokenFrom('#'+location.hash.slice(1)); if(t)loadToken(t,true)});
+window.addEventListener('hashchange',()=>{const k=shortFrom(location.hash); if(k){loadShort(k,true);return} const t=tokenFrom('#'+location.hash.slice(1)); if(t)loadToken(t,true)});
 
 /* ---------- PDF copy ---------- */
 const esc=t=>String(t||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -777,6 +780,36 @@ async function postGas(payload){
   if(!j||j.ok!==true)return {ok:false,stage:'server',error:(j&&j.error)?('رفضت الخدمة الطلب: '+j.error):'رفضت الخدمة الطلب'};
   return j;
 }
+function linkProblem(msg){
+  let b=document.getElementById('linkerr');
+  if(!b){b=document.createElement('div');b.id='linkerr';b.setAttribute('role','alert');
+    b.style.cssText='position:sticky;top:0;z-index:50;margin:0;padding:14px 16px;background:#faedc9;color:#5a3d00;border-bottom:3px solid #c98a00;font-weight:700;line-height:1.7;text-align:right';
+    document.body.insertBefore(b,document.body.firstChild)}
+  b.textContent=msg;
+}
+const SHORT_RE=/#k([a-z2-9]{12})(?![a-z0-9])/;
+const shortFrom=t=>{const m=String(t||'').match(SHORT_RE);return m?m[1]:''};
+async function gasGet(id){
+  const ctl=new AbortController(), to=setTimeout(()=>ctl.abort(),25000);
+  try{ const r=await fetch(GAS_URL+'?id='+encodeURIComponent(id),{redirect:'follow',cache:'no-store',signal:ctl.signal}); return JSON.parse(await r.text()) }
+  catch(e){ return null } finally{ clearTimeout(to) }
+}
+/* short link: the full form is saved in the school's private sheet under a random id; the link carries only the id.
+   It is used only after reading it back and comparing it with the original. Any failure returns '' and the long link is used. */
+async function shorten(tok){
+  if(!GAS_READY())return '';
+  try{ const r=await postGas({action:'link_create',token:GAS_TOKEN,data:tok}); if(!r.ok||!r.id)return '';
+       const back=await gasGet(r.id); return back&&back.ok===true&&back.data===tok?r.id:'' }
+  catch(e){ return '' }
+}
+async function loadShort(id,quiet){
+  if(!quiet)note('جارٍ فتح النموذج…');
+  const j=await gasGet(id);
+  if(j&&j.ok===true&&typeof j.data==='string'&&j.data){ return loadToken(j.data,quiet) }
+  const m1=j&&j.error==='not_found'?'هذا الرابط غير موجود أو غير صحيح. اطلبوا من المدرسة إعادة إرساله.':'تعذّر فتح النموذج الآن. تأكدوا من الإنترنت وأعيدوا المحاولة، أو اطلبوا من المدرسة إرسال الرابط من جديد.';
+  note(m1,'err'); linkProblem(m1);
+  return false;
+}
 async function uploadToSchool(){
   if(!GAS_READY())return {ok:false,stage:'config',error:'رمز الربط غير مضبوط في الملف'};
   note('جارٍ إنشاء ملف PDF…');
@@ -823,8 +856,9 @@ else showPdfBtns({save:async({filename,data})=>{const u=URL.createObjectURL(data
 
 /* ---------- start ---------- */
 (async()=>{
+  const k0=shortFrom(location.hash); if(k0){ await loadShort(k0); return }
   const t=tokenFrom('#'+location.hash.slice(1));
-  if(t && await loadToken(t,true)) return;
+  if(t){ if(await loadToken(t,true)) return; linkProblem('رابط النموذج غير مكتمل، فلم يُفتح النموذج. اطلبوا من المدرسة إعادة إرسال الرابط (قد يكون قُطع عند النسخ أو الإرسال).') }
   const d=ls.get('abs-draft2'); if(d){try{const o=JSON.parse(d); if(o&&Array.isArray(o.rows)&&o.rows.length===3){S=Object.assign(blank(),o); S.rows.forEach(r=>{r.o=(r.o|0)&7}); if(!Array.isArray(S.ot)||S.ot.length!==3)S.ot=DEF_OPTS.slice(); S.nt=S.nt||''; migrate(S)}}catch(e){}}
   mode='s'; applyMode();
 })();
