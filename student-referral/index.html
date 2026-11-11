@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تحويل طالب لوكيل شؤون الطلاب</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1d2b3a;--muted:#6b7a89;--line:#d6dde4;--brand:#0f6e6e;--brand2:#e8f4f3;--accent:#b8862b;--bg:#f2f5f7;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Tajawal',system-ui,sans-serif;font-size:16px;line-height:1.6}
+.wrap{max-width:760px;margin:0 auto;padding:12px 12px 90px}
+.head{background:var(--card);border-radius:16px;padding:16px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;text-align:center;border:1px solid var(--line)}
+.head .side{font-size:13px;font-weight:500;line-height:1.7}
+.head .side b{display:block;font-weight:700}
+.head img{width:92px;height:auto;display:block;margin:auto}
+.meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:10px 4px;font-size:13px;color:var(--muted)}
+.meta b{color:var(--ink)}
+h1{margin:6px 0 2px;text-align:center;font-size:24px;font-weight:800;color:var(--brand)}
+.sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.card h2{margin:0 0 12px;font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px}
+.card h2 .n{background:var(--brand);color:#fff;width:26px;height:26px;border-radius:50%;display:inline-grid;place-items:center;font-size:14px}
+.card.locked{opacity:.55}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.full{grid-column:1/-1}
+label.f{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-bottom:4px}
+input[type=text],select,textarea{width:100%;font:inherit;color:var(--ink);background:#fafbfc;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;outline:none;transition:.15s}
+input:focus,select:focus,textarea:focus{border-color:var(--brand);background:#fff;box-shadow:0 0 0 3px #0f6e6e22}
+textarea{min-height:96px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;inset:0;cursor:pointer;width:100%;height:100%;margin:0}
+.chip span{display:block;padding:9px 14px;border:1.5px solid var(--line);border-radius:999px;background:#fafbfc;font-size:15px;transition:.15s}
+.chip input:checked+span{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:700}
+.chip input:focus-visible+span{box-shadow:0 0 0 3px #0f6e6e44}
+.datebox{display:flex;gap:6px}
+.datebox button{white-space:nowrap}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:10px 14px;font-weight:700}
+.btn-s{background:var(--brand2);color:var(--brand)}
+.btn-p{background:var(--brand);color:#fff}
+.btn-g{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.refer{display:flex;align-items:center;gap:10px;background:#fff8e8;border:1.5px solid #f0dcae;border-radius:12px;padding:10px 12px;margin-top:12px;cursor:pointer}
+.refer input{width:20px;height:20px;accent-color:var(--accent)}
+.notes ol{margin:0;padding:0 20px 0 0;font-size:14px;color:#3b4a58}
+.notes li{margin:4px 0}
+.bar{position:fixed;inset:auto 0 0 0;background:#ffffffee;backdrop-filter:blur(6px);border-top:1px solid var(--line);padding:10px 12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.bar button{flex:1;max-width:220px}
+.toast{position:fixed;bottom:78px;left:50%;transform:translateX(-50%) translateY(20px);background:#1d2b3a;color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:9}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.err{border-color:#d64545!important}
+dialog{border:0;border-radius:16px;padding:18px;max-width:560px;width:92%;font-family:inherit;direction:rtl}
+dialog::backdrop{background:#0008}
+dialog pre{white-space:pre-wrap;font-family:inherit;background:#f6f8fa;border-radius:10px;padding:12px;font-size:14px;margin:10px 0;max-height:50vh;overflow:auto}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.head{grid-template-columns:1fr;}.head .side:last-child{order:3}h1{font-size:21px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="head">
+  <div class="side"><b>المملكة العربية السعودية</b><b>وزارة التعليم</b>الإدارة العامة للتعليم بمنطقة عسير</div>
+  <img alt="شعار وزارة التعليم" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCACvANwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD7LooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoopDxQAtFNDc0ooAWikzS0AFFFFABRRRQAUUUUAFFFFABRSZoJoAWimlgO9AOeAaAHUUUUAFFFFABRRRQAUUUUAFFFFABXL/FDWbnQvBl7fWZ23GFSNsZ2ljjP4V1FZ3iHSbXW9IuNMvQTBOm1sdR6Ee4PNVCykr7HPioVJ0ZRpu0mnY8M+D/irWV8a29jc31xdW98WWRJZC2GwSGGenSuo1z4vHT/FUthDp8cthbzGKaUsQ5IOGK9sA/nitrwL8M9P8Nau2qNey3s6grDuQKEB6n3Ncp4h+EuqXvi6e4tbmAabdTmV3ZvnjDHLDHc9cV2uVCc23tY+Rhh83wmDhCGsubXroekeLPGeheGLG3u9VvPLS4x5Kou5375AHatXQtWsNa0yHUtNuUuLWYZR17/4H2rxD9pHQdR+3aTf2ltNNYQ232cFFLCNgeM46ZHf2rT8Fzaz4F+BN/qs0DR3TTGW2ilXGwOyIpI+vOPpWLoxcE09WepDNq8cbUpVIWhFXue1gj1Bpa8h+APjfXPEtzqOn63MLl7dFmjm2BSATgqcdfavWldSxUEZHXmsakHCVmetgsbTxlGNans+5JRQKKg7AooqK5nigQvNIkaDqzMAPzNAm0tyQkDqabLIqIzswAUEkk8CuO+MPiC+8PeBbnUtMIW5Z0iSTGRHuON1cV8HPEWveMfC3iPRtTu2nmSDZBcuPmBkVxgkehGfzrWNJuPN0PNrZpTp4lYW15NXR2fh74meFdc8QtodjeSG5yRGzx7UlI67T3/rXLfEP4o6loviqTS9KtrZ4bQgTmZSS7EAkDBGOD715t8NPB3iNfiPp8c2mXdsLG5ElxLJGVVQvo3Q57Yr1Dx98LrnXfFD6tYX0FvHckG4WRTkEDBK468AccV0KFGE7N6WPn/rua43BuVOPLNSt8vn5lP4veMr1/DWinSp5LWPVIfPkdDhguB8ue3Jq58APEGpalBf6bqFxJci22vE8h3MAcgrnv0ro/Enw/0zWPDFhoxmkgawQLbzqASMDByO4NXPh94OsfCNhLBbTPcTTMGmmcYLY6AAdAKh1KfsuVbnbSwWP/tKNecvctrr5bW9TqaKBRXKfTBRRRQAUUUUAFFFFABRRRQAVkeLtUbR9CuL5EDSIAEB6bicDNa9Udd02DVtMmsLjIjlXGR1B7EU42vqZ1lJwfJucb8O/FWoatqUtjqJSRihkjdVxjHUVi+IvitNpnjWTSo7CF7C3mEM0hJ8wnuR24/pXYeDvCMGgXMt0blriZ12BiuAq/41ha38LdO1Txedca8kjhklEs1sFGHYeh7A45reLpczueFiKWZfVoRpP376+h2HiLXdL0LTft+q3AhtyQAcZLE9AB3NMR9G8W+HHCmO9028Qqw6ZHceoI/Sua+MnhfUfEmhWqaUqyT2su7ySwXeCMcE8ZH+NTfD3Sb3wf4AlW/UPcxiS5eJGzt4ztB/D9anljycyep1PEV3i5Upw/dqN7/oavgvwboXhGCePRrd0M7AyPI5dmx0GT2FedfDTw54w0/4uatqWpx3CWMhl3zO+UnBPyY55x+mK1/gr8QdU8ZahqVrqdrDH5CLLE0IIAUnG056n3r087fxocpQbT1uTQo4bGU6VWi+WMW7JafeMNzCs4tzLGJWG4IWG4j1x1xUua8x1bwFrd38aLPxhFqEa6dCi7oy58wbVK7AOmDnPX1r0rzUUqhYBj0GetZySVrM9ChWnNy548tnZea7kV5f2dpJEl1dQQNM2yISSBS7egz1Nee/H7w7rniTw3Zw6JG1wYbjfNAGALgjAPPXB/nTvi18Pb/xlrWiX1nqMdqli/71Xz93cG3Lj+LjHOPrXoqAKgUknAxk9aqLULSW5z1qcsXGpQqJqPR33Oa8N+Hmk+Hlh4e8SRpdsLVYrlGOQSO2fb19queGPDeieE9NlttJtltoGYySMWJLHHUk+1ZvxZ8Q3vhjwTc6rpsatcBljQsMqm443EVS+F+t3/jb4eyzasAk8vm2zyRrtDjGNwH4/pTtJx5ulyFUw9PERoJXqKOj8vU1vDPjbw/4i1KfT9MumknhBOGQqHAPJUnqK4n4g/E7UNC8YPpdjawPbWpX7RvBLSEgEgHtgGl+F3w71jw94rfU9TkhEMKMkPlPnzM8Zx2GP1roPFvw10jxD4hXWLi4nhZsefFHjbLjp16ccVqlShPXVHmylmmKwacVyVOb00L/AI18Qzaf4Zt72x4lu9ojZhnYCM5+tVvhl4gvtXS6t9QcSywYZZMYJB7Gt7X9CtNX0cadMDGiYMbJ1QjgYqDwl4ctfD9vIkEjzSSnLyOME46DFY3jy2PU9lifrMZ392xv0UUVmekFFFFABRRRQAUUUUAFFFFABWN4y1ObSPD9xewKDKgATIyAScZNbNVtTsoNQspLO6j3wyrtYU1uZ1YylBqO5x/wz8R6hq8l3a6g4leJQ6SBQDgnBBxVHxr4x1PS/Ehs7MRiCAKXVkyZM8nntXX+HPDun6DFIlij5kILu7ZY46D6VHq/hbSNV1GO/vLdnmTGcNgMB0BHetLw5r9Dz3h8V9WjBS940HvYI9O+3TusMKxeYzOcBRjPNVdB1rSvEFi1xpd3HdwBijFex9CDSeKdJ/tjw3faUJPJ+0wmMN/d9K534TeELrwlp13He3Ec01zIGIjztUAYHX60ko8rd9TadXELEQpqN4NavzOk0Tw/o+hmc6Tp1vZ+e2+XylxuNea6Zd+OD8dbi3nN9/Y2W+Rgfs4h2/Kw7bs/j1rt18aaWfHreDgs325YfML7fk6BtufXBBrpQozmhScd1uROhTxHL7KVlCXTy3TFJFedeNfBeuax8StB8RWWprDYWOPOjLkMMEk7QODuBwaTxh/wnQ+Kuh/2R5v/AAj+wfatuPL6ndv75xjH6d69FXGAKWsNV1NJKOL5oSTXK/S9hcivLfj7B4vmttK/4RgXzIJj5wtCQ27jYWxzjr7etW/iJYeOZ/Hfh248OzyppMT/AOmBZQqj5uS4/iG3gda9H2g04vkakRXg8ZCpRd426/joZ1rZfbfD8FnrUEVy8lui3UcihlZsDdkdDzS7dM0DSGMaQWNhaoWKooVI1HPQVifELxrY+DYrCS9tp5/tk/lKIsfKOpY59PStbxTpS694bvNLaUxC6h2hwPunqDj8KVnpfZmjnD3o09ZxX/DCeGPEGl+IrBrzSroTxK5RvlKlT6EHmuM8b+LdW07xQ1raSCOC3C5QqD5mRk5/lWx8LvB8nhHS7iCe6S5nuJfMZkBCgAYAGa29U8OaVqV/HfXlqrzx4wckA46ZHeq9yMnbVHPy4vEYWLl7s+pV8Zavcab4Ve/tV2zOECkjOwtjn8KyPhdruoaot3bX8xnaHaySEDOD2OK6+/sbe+sns7qISQyDDKaq6DodhosLQ2EJQOdzlmyWPualNctjaVGs8RGfN7qWqNSiiioO4KKKKACiiigAooooAKKKKACiiigAooooAKQ0tGKAMwaHpX9tnWhYwf2iY/KNxt+fb6ZrSAwKXFFDbe5MYRjeysIRXB+LvGGp6P8AETQPDttpX2i01L/XT4bK8kfLjjjGTn1rvaaUUtuwM+uKcWk9TOtTnONoSsxR0paMUGkbFHVNK0/UxENQs4LoQuJIxKgbaw6EZ71dA4xS0UEqKTvYKKKKCgooooAKKKKACiig0AFFID9KM4oAWiobqeO2tpLiZwkcaF3Y9gBkmodI1C01TT4dQsZlntp13RyL0YetFuouZXt1LlFFIaBi0UlUNV1fT9Mkto767iga6k8uEOcb2xnA/AUWJlJRV2aFFYknifRI/Dq+IG1GH+zGwRcjJU5OP51ZTWNPfWTo4ukN95H2jye/l5xu+mTTsyfawva5pUVBdzxWtrJcTyCOKJC7u3RQBkk1n6P4i0fV7jyNO1CC5k8lJyqHJ8t/ut9DiizY3Uimot6s16KjmcRxtIxAVRkn2rHj8UaHJpdnqa6lD9jvJVht5ScCRycBR+NCTYSqRjpJm5RSDFHFIsWiiigAooooAKKKKACiiigAooooAKivJfItZZsbvLUtj1wM1LVbVhnTLkf9Mm/kaa3Jm7RbR5vpXxJ8S6rYpfab8P726tZCwSVLpMNgkHr7g11Hg7xhB4isr1jZT2N/YMUurOf78bYyPwPrXm3wx8cX2jeDLTToPBuu6kkTy4ubaLdG+ZGPB9s4pNO8Ta1a+Mtd10+A/ERi1SCKNYhbHchVdpJ4xzXS6Su1Y+bo5lKMYTlUbvurbaenc9D0/Xx4n+Gl3rK2xthNa3A8stuxtDDr+FL8Hf8Akmmg/wDXqP5mvOfCviXW9H8AHw1J4F8RSymKZPNW3IX5y2DjGeM1oeCfGmsaB4W0/RpvAPiSeS0hEbOluQGOe2RSlSfK0jahmNN1ITqPXl10e57ITgVw3iHx5c2viCfRNA8O3mu3dqoa6MLhEhJ5CknvjtWafiZqn/RO/E//AH4/+tXOeEfFWs6Jq2vXs3gPxHN/al6blAtsQUXGNpyKmNF6to2xOZwk4xpztfd2en4HbaD4s8U32r29pfeBL2wtpGxJcPcIwjGDyQOf/wBdb3jAWNvotxq95YQ3h02GS6iR1BIZVJ4J6EjjNcd/wszVCf8AknXic/8AbD/61Z/ibx5q2reHtR0yP4feJYnu7aSBXa3OFLKRk8e9HspX2sH16lClJOo5PzX/AACb4kS2s/wKFxZWUdlbTRwyJbxgBYwzA4GOK0bT/kur/wDYvj/0atcNrmt65qfwzh8JJ4I8QxzRwxR+e1s2zKEc4xntXoNpY3g+MzX5tZhaHQxF5xQ7N/mKduemcdq0kuWLXqclOp7etGcf7l9PW5p/EDxNa6BZwWz6fLql1qDGG3sogC03HzZz2wa4+x8WXeh6nYC4+HDaMl5LDYLcCVBgZwq/KM4HOBVz4mz6hpnj/wAO67baHqOrQWlvOHS1iLEFhgc9B1rG8T+I9X8WXmhWSeCtfsBb6tBcvLPbnYFUkHOBx16+1TCK5VoXi8TNVZWlZxasrb7dbHe3PiQS+LNQ8L/ZCph037X5+/ruJG3H4da4nwfqtjpfwo8JPf6ZHfrPqEcMYfH7p2lIWQZHUVrEFvjXq6qCSdAQADv87Vy09rdWPws8E2l5bTW06a3bh45UKsP3p6g04xVkhVa9RylU7cy/FHd+KPHU9hrzaDoegXeuX8MYkuUhYKsKnpknuab4R8b6jq3ipvD+q+Gp9HuBam5HmzK5K7gvb6/pXMQ61qvhbx74pn/4RHW9Tiv7iJopraAldqpjrjnr2qXwbrk2vfGh7y40a+0hxozIIbtNrnEi8/Sl7NWenQpY2o6sbzd3K3Lbpr1PXKKBRXMfQhRRRQAUUUUAFFFFABRRRQAVn+IrS7vtFu7OxultbiaMokxTdszwTjvxWhTZHSNC7sqqOpY4AoFKKkmmZfhbRLbQNAs9HtdzRW0e0M3Vj1JPuSSfxqn4n0/xFdXcD6JqsNjCkEyyo8e4tIy4jb/gLc1vvJGiF3dVUDJJOAKAysSAwJHXBquZ3uZOhDkVNaJdinokF5DpNtDqU63N2karNKq4Dtjk4q6UX0oZlRcsQB6k0u4bckgCpuaRikrCBF/u0u1fShWDKGBBB6EUtA7IbsX+7QEUdqdmmNLGrqjOoZugJ5P0oCyHbV9KNo9Kie7tUk8t7mFXHG0yAH8qkeREALMFycDJxzQFhSoPamlRjgU/NJQFjk/DHhy/tfE2p+I9ZuLea9vEWCNIFISKFScDnkk9TR4m8OahrviLSpLi4gTR9PmW68oKfNlmXO3J6BRwfXNdWxCjJIAHXNIHQkfMMsMjnrV873Of6pT5OTpe/r1DaMdBXNaN4cuYvGuo+JdQuIpZZoltrSONSBFCDnknqxP8q6f8qO9Sm0aTpQm05dNRaKKKRqFFFFABRRRQAUUUUAFFFFABWN42QS+Fr+MnAePbn0yQK2ar6naR31jJaSlgkgAJXr1zQBxOqXs934SOmSMRc26yC7IPOIRx/wB9HZ+taV3eXEE98bdkicfYkDhAThzg59evFa02hWUr6hIQyvfxCOZlPOAMcU6fRbeWSV2eTMphLYP/ADzOV/8Ar0xmRrV3dW9pq1jPKt15VvHNG7xgcMxBBA4PIp099cJq17b39xPAjhktIhH+6lGzOd+PvZzxntWrqGjW97JcvI0gNxCsL7T0VWJGPfJouNHjuL9Lq4uJ5VjbckDEeWrYxnAHPfqaAMnTZb6LTNDsorwlruMMZTGMoixhtoHTPQZNWBqV55RJkBYasLb7v/LPcBj8qvWmjQ2z2pWaZltC3kq7ZChhjb06AdKzNb06KLVrJreW43zX6TtAp+Tj7zkY44HrigC1qNxfTatcWdpci2FvaibOwNvYkgA57fL+tUfDFy+o6zPfS2isWt4CJNwPlZTJUDrySelbOoaTFeT/AGgTz28rR+U7RMBvTOcHg/nUunabb2Esr24KiRUXb2ARcDH4UCMbS4Fm13Vd+m286fa+ZnwWX92vABFVJ57vULCy1Ga5IifUkCQBBgKJCBk9c8ZrdGkFLue4gv7mHz5PMkRdu0nAHcE9AKiOgQ7123NykKzidYARsD5zxxnGecZoGVYtTvG0SxuWcebNfCFzt/h8wrj8hTLfUL5tCn157klEWWRbYINuFLAAnr2zV99ChMqEXNwsSzicQhhsD5z6ZxnnGadFosMayQrPP9kkL7rYkGP5s5HTIGST1oAydQm1CKKOK4vvPS6sJ5HXy1ABCAjGOccmmm5m06DTJXcXBTT5pdzIAflRSACOgrUg0CGO5jmkurq4EULQokrAqEbGRwB6dafDodvGIFeSaZIIniRZGB+RgAVPHIwKAMbUNT1XT7NXe7SZrixedT5YHluoU8eow3f0rWs57u31mOwnuTcpNbGZWZQpUhgCOOo+b9KYfDlq1u8MtxczAwG3QuwJjQ4yF49hyeeK0TYxnUIb0lvMiiaJR2wSCf5CgC3RRRSEFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABSFQTnHNLRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAf/2Q==">
+  <div class="side"><b>ابتدائية الأبناء الخامسة</b>للطفولة المبكرة والروضة الملحقة بها</div>
+</div>
+
+<div class="meta"><span>اسم النموذج: <b>تحويل طالب لوكيل شؤون الطلاب</b></span><span>رمز النموذج: <b>( و.ط.ع.ن - 04 - 03 )</b></span></div>
+
+<h1>تحويل طالب لوكيل شؤون الطلاب</h1>
+<div class="sub">تعبئة المعلمة ← إجراء الوكيلة ← إجراء الموجهة</div>
+
+<!-- 1 المعلم -->
+<section class="card" id="s1">
+  <h2><span class="n">1</span> بيانات التحويل (المعلمة)</h2>
+  <div class="grid">
+    <div class="full"><label class="f" for="student">اسم الطالبة</label><input type="text" id="student" autocomplete="off"></div>
+    <div><label class="f" for="grade">الصف</label>
+      <select id="grade"><option value="">— اختاري —</option><option>روضة</option><option>الأول</option><option>الثاني</option><option>الثالث</option><option>الرابع</option><option>الخامس</option><option>السادس</option></select></div>
+    <div><label class="f" for="section">الفصل / الشعبة</label><input type="text" id="section" autocomplete="off"></div>
+    <div><label class="f" for="subject">المادة</label><input type="text" id="subject" autocomplete="off"></div>
+    <div><label class="f" for="period">الحصة الدراسية</label>
+      <select id="period"><option value="">— اختاري —</option><option>الأولى</option><option>الثانية</option><option>الثالثة</option><option>الرابعة</option><option>الخامسة</option><option>السادسة</option><option>السابعة</option></select></div>
+    <div class="full"><label class="f">سبب التحويل</label>
+      <div class="chips" id="reasons">
+        <label class="chip"><input type="checkbox" value="عدم أداء الواجب"><span>عدم أداء الواجب</span></label>
+        <label class="chip"><input type="checkbox" value="مشاغبة"><span>مشاغبة</span></label>
+        <label class="chip"><input type="checkbox" value="تأخر عن الحصة"><span>تأخر عن الحصة</span></label>
+        <label class="chip"><input type="checkbox" value="ضعف دراسي"><span>ضعف دراسي</span></label>
+        <label class="chip"><input type="checkbox" value="أخرى" id="otherChk"><span>أخرى</span></label>
+      </div>
+      <input type="text" id="otherTxt" placeholder="اذكري السبب الآخر" style="margin-top:8px;display:none">
+    </div>
+    <div class="full"><label class="f" for="issue">إيضاح المشكلة</label><textarea id="issue"></textarea></div>
+    <div><label class="f" for="tname">اسم المعلمة</label><input type="text" id="tname" autocomplete="off"></div>
+    <div><label class="f" for="tsign">التوقيع</label><input type="text" id="tsign" placeholder="الاسم أو الاختصار" autocomplete="off"></div>
+    <div class="full"><label class="f" for="tdate">التاريخ (هجري)</label>
+      <div class="datebox"><input type="text" id="tdate" placeholder="يوم / شهر / سنة هـ" autocomplete="off"><button type="button" class="btn-s" data-today="tdate">اليوم</button></div></div>
+  </div>
+</section>
+
+<!-- 2 الوكيل -->
+<section class="card" id="s2">
+  <h2><span class="n">2</span> ما تم حيال الطالبة (خاص بوكيلة المدرسة)</h2>
+  <textarea id="agentAct" placeholder="الإجراء المتخذ…"></textarea>
+  <label class="refer"><input type="checkbox" id="toCounselor"><span>تمت إحالتها إلى الموجهة الطلابية</span></label>
+  <div class="grid" style="margin-top:10px">
+    <div><label class="f" for="aname">وكيلة المدرسة</label><input type="text" id="aname" value="لطيفة الشهري" autocomplete="off"></div>
+    <div><label class="f" for="asign">التوقيع</label><input type="text" id="asign" autocomplete="off"></div>
+    <div class="full"><label class="f" for="adate">التاريخ (هجري)</label>
+      <div class="datebox"><input type="text" id="adate" placeholder="يوم / شهر / سنة هـ" autocomplete="off"><button type="button" class="btn-s" data-today="adate">اليوم</button></div></div>
+  </div>
+</section>
+
+<!-- 3 المرشد -->
+<section class="card" id="s3">
+  <h2><span class="n">3</span> ما تم حيال الطالبة (خاص بالموجهة الطلابية)</h2>
+  <textarea id="cAct" placeholder="الإجراء المتخذ…"></textarea>
+  <div class="grid" style="margin-top:10px">
+    <div><label class="f" for="cname">الموجهة الطلابية</label><input type="text" id="cname" autocomplete="off"></div>
+    <div><label class="f" for="csign">التوقيع</label><input type="text" id="csign" autocomplete="off"></div>
+    <div class="full"><label class="f" for="cdate">التاريخ (هجري)</label>
+      <div class="datebox"><input type="text" id="cdate" placeholder="يوم / شهر / سنة هـ" autocomplete="off"><button type="button" class="btn-s" data-today="cdate">اليوم</button></div></div>
+  </div>
+</section>
+
+<section class="card notes">
+  <h2>ملاحظات</h2>
+  <ol>
+    <li>يتم إخطار وكيلة شؤون الطالبات حسب هذا النموذج بعد انتهاء الحصة الدراسية.</li>
+    <li>تقوم وكيلة شؤون الطالبات باستدعاء الطالبة في وقت لا يؤثر عليها دراسياً.</li>
+    <li>يتم تحويل الطالبة إلى الموجهة في حالة تكرار السلوك أو الضعف الدراسي.</li>
+    <li>تقوم الموجهة الطلابية بإخطار المعلمة بما تم حيال الطالبة.</li>
+    <li>يحفظ هذا النموذج لدى وكيلة شؤون الطالبات ونسخة لدى الموجهة الطلابية.</li>
+  </ol>
+</section>
+</div>
+
+<div class="bar">
+  <button class="btn-p" id="summaryBtn" type="button">عرض الملخص ونسخه</button>
+  <button class="btn-g" id="resetBtn" type="button">نموذج جديد</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<dialog id="dlg">
+  <b>ملخص التحويل</b>
+  <pre id="sumText"></pre>
+  <div style="display:flex;gap:8px;justify-content:flex-end">
+    <button class="btn-g" id="closeBtn" type="button">إغلاق</button>
+    <button class="btn-p" id="copyBtn" type="button">نسخ</button>
+  </div>
+</dialog>
+
+<script>
+const $=id=>document.getElementById(id);
+const ids=['student','grade','section','subject','period','otherTxt','issue','tname','tsign','tdate','agentAct','aname','asign','adate','cAct','cname','csign','cdate'];
+const KEY='student-referral-draft';
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+function hijriToday(){
+  try{
+    const p=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn',{day:'numeric',month:'numeric',year:'numeric'}).formatToParts(new Date());
+    const g=t=>p.find(x=>x.type===t).value;
+    return g('day')+' / '+g('month')+' / '+g('year')+'هـ';
+  }catch(e){return ''}
+}
+function save(){
+  try{
+    const d={};ids.forEach(i=>d[i]=$(i).value);
+    d.reasons=[...document.querySelectorAll('#reasons input')].map(c=>c.checked);
+    d.toC=$('toCounselor').checked;
+    localStorage.setItem(KEY,JSON.stringify(d));
+  }catch(e){}
+}
+function load(){
+  try{
+    const d=JSON.parse(localStorage.getItem(KEY)||'null');if(!d)return;
+    ids.forEach(i=>{if(d[i]!=null)$(i).value=d[i]});
+    document.querySelectorAll('#reasons input').forEach((c,k)=>c.checked=!!(d.reasons&&d.reasons[k]));
+    $('toCounselor').checked=!!d.toC;
+  }catch(e){}
+}
+function sync(){
+  $('otherTxt').style.display=$('otherChk').checked?'block':'none';
+  $('s3').classList.toggle('locked',!$('toCounselor').checked);
+}
+document.addEventListener('input',()=>{sync();save()});
+document.addEventListener('change',()=>{sync();save()});
+document.querySelectorAll('[data-today]').forEach(b=>b.onclick=()=>{$(b.dataset.today).value=hijriToday();save()});
+function summary(){
+  const r=[...document.querySelectorAll('#reasons input:checked')].map(c=>c.value==='أخرى'?('أخرى'+($('otherTxt').value?' ('+$('otherTxt').value+')':'')):c.value);
+  const v=i=>$(i).value.trim()||'—';
+  let s='نموذج: تحويل طالبة لوكيلة شؤون الطالبات\n'+
+  'الطالبة: '+v('student')+' | الصف: '+v('grade')+(($('section').value.trim())?' / '+$('section').value.trim():'')+'\n'+
+  'المادة: '+v('subject')+' | الحصة: '+v('period')+'\n'+
+  'سبب التحويل: '+(r.length?r.join('، '):'—')+'\n'+
+  'إيضاح المشكلة: '+v('issue')+'\n'+
+  'المعلمة: '+v('tname')+' | التاريخ: '+v('tdate')+'\n';
+  if($('agentAct').value.trim()||$('toCounselor').checked)
+    s+='\nإجراء الوكيلة: '+v('agentAct')+'\n'+($('toCounselor').checked?'تمت الإحالة إلى الموجهة الطلابية\n':'')+'الوكيلة: '+v('aname')+' | التاريخ: '+v('adate')+'\n';
+  if($('cAct').value.trim())
+    s+='\nإجراء الموجهة: '+v('cAct')+'\nالموجهة: '+v('cname')+' | التاريخ: '+v('cdate')+'\n';
+  s+='\nابتدائية الأبناء الخامسة للطفولة المبكرة والروضة الملحقة بها';
+  return s;
+}
+$('summaryBtn').onclick=()=>{
+  if(!$('student').value.trim()){$('student').classList.add('err');$('student').focus();toast('اكتبي اسم الطالبة أولاً');return}
+  $('student').classList.remove('err');
+  $('sumText').textContent=summary();$('dlg').showModal();
+};
+$('closeBtn').onclick=()=>$('dlg').close();
+$('copyBtn').onclick=async()=>{
+  try{await navigator.clipboard.writeText($('sumText').textContent);toast('تم النسخ ✓')}
+  catch(e){const r=document.createRange();r.selectNodeContents($('sumText'));const s=getSelection();s.removeAllRanges();s.addRange(r);toast('حددي النص وانسخيه')}
+};
+$('resetBtn').onclick=()=>{
+  if(!confirmed){confirmed=true;$('resetBtn').textContent='اضغطي مرة أخرى للتأكيد';setTimeout(()=>{confirmed=false;$('resetBtn').textContent='نموذج جديد'},2500);return}
+  ids.forEach(i=>{if(i!=='aname')$(i).value=''});
+  document.querySelectorAll('#reasons input').forEach(c=>c.checked=false);$('toCounselor').checked=false;
+  confirmed=false;$('resetBtn').textContent='نموذج جديد';sync();save();toast('تم مسح النموذج');
+};
+let confirmed=false;
+load();sync();
+</script>
+</body>
+</html>
