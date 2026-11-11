@@ -37,7 +37,7 @@ h1{margin:6px 0 2px;text-align:center;font-size:24px;font-weight:800;color:var(-
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .full{grid-column:1/-1}
 label.f{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-bottom:4px}
-input[type=text],select,textarea{width:100%;font:inherit;color:var(--ink);background:#fafbfc;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;outline:none;transition:.15s}
+input[type=text],input[type=password],select,textarea{width:100%;font:inherit;color:var(--ink);background:#fafbfc;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;outline:none;transition:.15s}
 input:focus,select:focus,textarea:focus{border-color:var(--brand);background:#fff;box-shadow:0 0 0 3px #0f6e6e22}
 textarea{min-height:96px;resize:vertical}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -97,6 +97,16 @@ button:disabled{opacity:.55;cursor:default}
 <div class="steps" id="steps"><div data-r="t">١ المعلمة</div><div data-r="a">٢ الوكيلة</div><div data-r="c">٣ الموجهة</div></div>
 
 <div id="banner"></div>
+
+<div id="adminArea" style="display:none">
+  <section class="card"><h2>إنشاء رابط جديد للمعلمة</h2>
+    <p style="font-size:14px;color:#3b4a58;margin:0 0 10px">كل رابط يعمل لتحويل واحد فقط، وبعد أن ترسله المعلمة لا يُفتح مرة ثانية.</p>
+    <label class="f" for="adminCode">كلمة سر الوكيلة</label>
+    <input type="password" id="adminCode" autocomplete="off">
+    <div class="actions"><button class="btn-p" id="mkLink" type="button">إنشاء رابط جديد</button></div>
+    <div id="linkOut"></div>
+  </section>
+</div>
 
 <div id="formArea">
 <!-- 1 المعلمة -->
@@ -185,6 +195,8 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbxInOCHB_mosbjj7EUYFUHk
 const $=id=>document.getElementById(id);
 const P=new URLSearchParams(location.search);
 const RID=(P.get('id')||'').trim();
+const K=(P.get('k')||'').trim();
+const ADMIN=P.has('admin');
 const ROLE=({a:'a',c:'c'})[P.get('s')]||'t';      // t = المعلمة (افتراضي)
 const BASE=location.origin+location.pathname;
 const ROLE_AR={t:'المعلمة',a:'الوكيلة',c:'الموجهة'};
@@ -293,7 +305,7 @@ function applyRole(){
   });
   // قسم الموجهة يظهر للوكيلة أيضاً لكنه مقفل
   $('mainBtn').textContent = ROLE==='t' ? 'توقيع وإرسال للوكيلة عبر واتساب' : (ROLE==='a' ? 'توقيع وإرسال للموجهة عبر واتساب' : 'توقيع وإنهاء وحفظ في الدرايف');
-  $('resetBtn').style.display = ROLE==='t' && !RID ? '' : 'none';
+  $('resetBtn').style.display='none';
   if(ROLE!=='t') $('s1').querySelector('h2').scrollIntoView&&0;
 }
 
@@ -301,7 +313,8 @@ function applyRole(){
 async function api(method,payload){
   if(!API_URL) throw new Error('NO_API');
   if(method==='GET'){
-    const r=await fetch(API_URL+'?id='+encodeURIComponent(payload.id),{redirect:'follow'});
+    const q=payload.k?('k='+encodeURIComponent(payload.k)):('id='+encodeURIComponent(payload.id));
+    const r=await fetch(API_URL+'?'+q,{redirect:'follow'});
     return r.json();
   }
   const r=await fetch(API_URL,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
@@ -339,7 +352,7 @@ async function onMain(){
     else if(ROLE==='a') rec.stage=toC?'c':'done';
     else rec.stage='done';
     const finalize=rec.stage==='done';
-    const res=await api('POST',{action:finalize?'finalize':'save',id:recordId||undefined,record:rec});
+    const res=await api('POST',{action:finalize?'finalize':'save',id:recordId||undefined,k:K||undefined,role:ROLE,record:rec});
     if(!res||!res.ok) throw new Error((res&&res.error)||'تعذر الحفظ');
     recordId=res.id||recordId;
     showDone(rec.stage,res);
@@ -386,26 +399,58 @@ $('resetBtn').onclick=()=>{
 };
 
 /* ---------- البدء ---------- */
+function hideForm(){$('formArea').style.display='none';$('bar').style.display='none';$('steps').style.display='none'}
+function showForm(){$('formArea').style.display='';$('bar').style.display='';$('steps').style.display='';Object.values(pads).forEach(p=>p.fit())}
+function block(msg){hideForm();banner('err',msg)}
+
+function startAdmin(){
+  hideForm();$('adminArea').style.display='block';
+  $('mkLink').onclick=async()=>{
+    const code=$('adminCode').value.trim();
+    if(!code){toast('اكتبي كلمة السر');return}
+    if(!API_URL){banner('warn','لم يُربط الدرايف بعد.');return}
+    $('mkLink').disabled=true;banner('','');
+    try{
+      const res=await api('POST',{action:'newlink',code});
+      if(!res||!res.ok)throw new Error((res&&res.error)||'تعذر إنشاء الرابط');
+      const link=BASE+'?k='+res.token;
+      $('linkOut').innerHTML='<div class="linkbox">'+link+'</div><div class="actions"><button class="btn-w" id="waT" type="button">إرسال الرابط للمعلمة عبر واتساب</button><button class="btn-g" id="cpT" type="button">نسخ الرابط</button></div><p style="font-size:13px;color:#6b7a89">هذا الرابط يعمل لتحويل واحد فقط.</p>';
+      $('waT').onclick=()=>openWA(waLink('رابط تحويل طالبة (يعمل لمرة واحدة):\n'+link));
+      $('cpT').onclick=async()=>{try{await navigator.clipboard.writeText(link);toast('تم نسخ الرابط ✓')}catch(e){toast('حددي الرابط وانسخيه')}};
+    }catch(e){banner('err',e.message==='Failed to fetch'?'تحققي من الاتصال بالإنترنت أو من نشر السكربت.':e.message)}
+    finally{$('mkLink').disabled=false}
+  };
+}
+
 async function start(){
   ['t','a','c'].forEach(initPad);
+  if(ADMIN){startAdmin();return}
   buildDates();applyRole();sync();
   if(ROLE==='t'&&!RID){
-    if(!API_URL)banner('warn','الحفظ والإرسال غير مفعّل بعد: لم يُربط الدرايف.');
+    hideForm();
+    if(!K){block('هذا الرابط ناقص. اطلبي من وكيلة المدرسة رابطاً خاصاً بهذا التحويل.');return}
+    if(!API_URL){banner('warn','الحفظ والإرسال غير مفعّل بعد: لم يُربط الدرايف.');return}
+    banner('info','جارٍ التحقق من الرابط…');
+    try{
+      const r=await api('GET',{k:K});
+      if(!r||!r.ok){block(r&&r.used?'هذا الرابط استُخدم مسبقاً. اطلبي من وكيلة المدرسة رابطاً جديداً لكل تحويل.':((r&&r.error)||'رابط غير صحيح'));return}
+    }catch(e){block('تعذر التحقق من الرابط: '+(e.message==='Failed to fetch'?'تحققي من الاتصال بالإنترنت.':e.message));return}
+    banner('','');showForm();
     return;
   }
   if(!RID){banner('err','الرابط ناقص. اطلبي من المرسِلة إعادة إرسال الرابط الكامل.');$('mainBtn').disabled=true;return}
   if(!API_URL){banner('err','لم يُربط الحفظ بعد، فلا يمكن فتح هذا التحويل.');$('mainBtn').disabled=true;return}
-  banner('info','جارٍ تحميل التحويل…');
+  hideForm();banner('info','جارٍ تحميل التحويل…');
   try{
     const res=await api('GET',{id:RID});
     if(!res||!res.ok)throw new Error((res&&res.error)||'لم يُعثر على التحويل');
-    if(res.record.stage==='done'){banner('info','اكتمل هذا التحويل وحُفظ، ولا يمكن تعديله.');fill(res.record);document.querySelectorAll('.card').forEach(s=>s.classList.add('ro'));$('bar').style.display='none';return}
-    fill(res.record);applyRole();banner('','');
-    if(ROLE==='a'&&res.record.stage!=='a')banner('info','هذا التحويل في مرحلة مختلفة؛ تأكدي من أنك الجهة المطلوبة.');
+    const st=res.record.stage;
+    if(st==='done'){fill(res.record);showForm();banner('info','اكتمل هذا التحويل وحُفظ، ولا يمكن تعديله.');document.querySelectorAll('.card').forEach(s=>s.classList.add('ro'));$('bar').style.display='none';return}
+    if((ROLE==='a'&&st!=='a')||(ROLE==='c'&&st!=='c')){block('تم إرسال هذا التحويل مسبقاً ولا يمكن تعديله من هذا الرابط.');return}
+    fill(res.record);applyRole();banner('','');showForm();
   }catch(e){
-    banner('err','تعذر تحميل التحويل: '+e.message);$('mainBtn').disabled=true;
+    block('تعذر تحميل التحويل: '+e.message);
   }
-  Object.values(pads).forEach(p=>p.fit());
 }
 start();
 </script>
