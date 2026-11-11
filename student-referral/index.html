@@ -6,22 +6,34 @@
 <title>تحويل طالبة لوكيلة شؤون الطالبات</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#1d2b3a;--muted:#6b7a89;--line:#d6dde4;--brand:#0f6e6e;--brand2:#e8f4f3;--accent:#b8862b;--bg:#f2f5f7;--card:#fff}
+:root{--ink:#1d2b3a;--muted:#6b7a89;--line:#d6dde4;--brand:#0f6e6e;--brand2:#e8f4f3;--accent:#b8862b;--bg:#f2f5f7;--card:#fff;--bad:#c0392b}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:'Tajawal',system-ui,sans-serif;font-size:16px;line-height:1.6}
-.wrap{max-width:760px;margin:0 auto;padding:12px 12px 90px}
+.wrap{max-width:760px;margin:0 auto;padding:12px 12px 100px}
 .head{background:var(--card);border-radius:16px;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line)}
 .head .side{font-size:14px;font-weight:500;line-height:1.8;flex:1}
-.head .side b{display:block;font-weight:700}
 .head img{width:92px;height:auto;display:block;mix-blend-mode:multiply}
 .meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:10px 4px;font-size:13px;color:var(--muted)}
 .meta b{color:var(--ink)}
 h1{margin:6px 0 2px;text-align:center;font-size:24px;font-weight:800;color:var(--brand)}
-.sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:14px}
+.sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:10px}
+.steps{display:flex;gap:6px;margin:0 0 12px}
+.steps div{flex:1;text-align:center;font-size:12.5px;padding:7px 4px;border-radius:10px;background:#e6ebef;color:var(--muted);font-weight:500}
+.steps div.on{background:var(--brand);color:#fff;font-weight:700}
+.steps div.done{background:var(--brand2);color:var(--brand)}
+.banner{border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:14px}
+.banner.warn{background:#fff4e5;border:1px solid #f3d29b;color:#7a4b00}
+.banner.info{background:var(--brand2);border:1px solid #bfe0dd;color:#0b4f4f}
+.banner.err{background:#fdecea;border:1px solid #f1b9b2;color:#8a2216}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
 .card h2{margin:0 0 12px;font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px}
 .card h2 .n{background:var(--brand);color:#fff;width:26px;height:26px;border-radius:50%;display:inline-grid;place-items:center;font-size:14px}
-.card.locked{opacity:.55}
+.card h2 .tag{margin-inline-start:auto;font-size:12px;font-weight:500;color:var(--muted);background:#eef1f4;border-radius:999px;padding:2px 10px}
+.card.mine{border-color:var(--brand);box-shadow:0 0 0 3px #0f6e6e1a}
+.card.ro input,.card.ro select,.card.ro textarea{background:#f1f3f5;color:#3b4a58;border-color:#e3e8ec}
+.card.ro .chip,.card.ro .refer,.card.ro .datebox button{pointer-events:none}
+.card.ro .datebox button{display:none}
+.card.hidden{display:none}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .full{grid-column:1/-1}
 label.f{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-bottom:4px}
@@ -33,26 +45,42 @@ textarea{min-height:96px;resize:vertical}
 .chip input{position:absolute;opacity:0;inset:0;cursor:pointer;width:100%;height:100%;margin:0}
 .chip span{display:block;padding:9px 14px;border:1.5px solid var(--line);border-radius:999px;background:#fafbfc;font-size:15px;transition:.15s}
 .chip input:checked+span{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:700}
-.chip input:focus-visible+span{box-shadow:0 0 0 3px #0f6e6e44}
 .datebox{display:flex;gap:6px}
 .datebox button{white-space:nowrap}
 button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:10px 14px;font-weight:700}
+button:disabled{opacity:.55;cursor:default}
 .btn-s{background:var(--brand2);color:var(--brand)}
 .btn-p{background:var(--brand);color:#fff}
+.btn-w{background:#25d366;color:#073b1c}
 .btn-g{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
 .refer{display:flex;align-items:center;gap:10px;background:#fff8e8;border:1.5px solid #f0dcae;border-radius:12px;padding:10px 12px;margin-top:12px;cursor:pointer}
 .refer input{width:20px;height:20px;accent-color:var(--accent)}
+.sigwrap{margin-top:12px}
+.sigbox{position:relative;border:1.5px dashed #9fb2c0;border-radius:12px;background:#fff;height:140px;overflow:hidden}
+.sigbox canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+.sigbox img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:none;background:#fff}
+.sigbox .ph{position:absolute;inset:0;display:grid;place-items:center;color:#a8b5c0;font-size:14px;pointer-events:none}
+.sigbox.signed .ph{display:none}
+.card.ro .sigbox canvas{display:none}
+.card.ro .sigbox img.has{display:block}
+.card.ro .sigbox .ph{display:grid}
+.card.ro .sigbox.signed .ph{display:none}
+.sigtools{display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-size:13px;color:var(--muted)}
+.card.ro .sigtools button{display:none}
 .notes ol{margin:0;padding:0 20px 0 0;font-size:14px;color:#3b4a58}
 .notes li{margin:4px 0}
 .bar{position:fixed;inset:auto 0 0 0;background:#ffffffee;backdrop-filter:blur(6px);border-top:1px solid var(--line);padding:10px 12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.bar button{flex:1;max-width:220px}
-.toast{position:fixed;bottom:78px;left:50%;transform:translateX(-50%) translateY(20px);background:#1d2b3a;color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:9}
+.bar button{flex:1;max-width:260px}
+.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(20px);background:#1d2b3a;color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:9;max-width:90%;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.err{border-color:#d64545!important}
-dialog{border:0;border-radius:16px;padding:18px;max-width:560px;width:92%;font-family:inherit;direction:rtl}
-dialog::backdrop{background:#0008}
-dialog pre{white-space:pre-wrap;font-family:inherit;background:#f6f8fa;border-radius:10px;padding:12px;font-size:14px;margin:10px 0;max-height:50vh;overflow:auto}
-@media(max-width:520px){.grid{grid-template-columns:1fr}h1{font-size:21px}}
+.err{border-color:var(--bad)!important}
+.done-card{text-align:center;padding:24px 16px}
+.done-card .ok{font-size:44px}
+.done-card h2{justify-content:center}
+.linkbox{direction:ltr;text-align:left;font-size:12px;word-break:break-all;background:#f6f8fa;border-radius:10px;padding:8px 10px;margin:10px 0;color:#3b4a58}
+.actions{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.center{display:none}
+@media(max-width:520px){.grid{grid-template-columns:1fr}h1{font-size:21px}.head img{width:76px}}
 </style>
 </head>
 <body>
@@ -66,11 +94,14 @@ dialog pre{white-space:pre-wrap;font-family:inherit;background:#f6f8fa;border-ra
 <div class="meta"><span>اسم النموذج: <b>تحويل طالبة لوكيلة شؤون الطالبات</b></span><span>رمز النموذج: <b>( و.ط.ع.ن - ٠٤ - ٠٣ )</b></span></div>
 
 <h1>تحويل طالبة لوكيلة شؤون الطالبات</h1>
-<div class="sub">تعبئة المعلمة ← إجراء الوكيلة ← إجراء الموجهة</div>
+<div class="steps" id="steps"><div data-r="t">١ المعلمة</div><div data-r="a">٢ الوكيلة</div><div data-r="c">٣ الموجهة</div></div>
 
-<!-- 1 المعلم -->
-<section class="card" id="s1">
-  <h2><span class="n">1</span> بيانات التحويل (المعلمة)</h2>
+<div id="banner"></div>
+
+<div id="formArea">
+<!-- 1 المعلمة -->
+<section class="card" id="s1" data-sec="t">
+  <h2><span class="n">1</span> بيانات التحويل (المعلمة)<span class="tag" id="tag1"></span></h2>
   <div class="grid">
     <div class="full"><label class="f" for="student">اسم الطالبة</label><input type="text" id="student" autocomplete="off"></div>
     <div><label class="f" for="grade">الصف</label>
@@ -91,35 +122,41 @@ dialog pre{white-space:pre-wrap;font-family:inherit;background:#f6f8fa;border-ra
     </div>
     <div class="full"><label class="f" for="issue">إيضاح المشكلة</label><textarea id="issue"></textarea></div>
     <div><label class="f" for="tname">اسم المعلمة</label><input type="text" id="tname" autocomplete="off"></div>
-    <div><label class="f" for="tsign">التوقيع</label><input type="text" id="tsign" placeholder="الاسم أو الاختصار" autocomplete="off"></div>
-    <div class="full"><label class="f" for="tdate">التاريخ (هجري)</label>
+    <div><label class="f" for="tdate">التاريخ (هجري)</label>
       <div class="datebox"><input type="text" id="tdate" placeholder="يوم / شهر / سنة هـ" autocomplete="off"><button type="button" class="btn-s" data-today="tdate">اليوم</button></div></div>
   </div>
+  <div class="sigwrap"><label class="f">التوقيع (ارسمي بإصبعك)</label>
+    <div class="sigbox" id="sigbox_t"><canvas id="sig_t"></canvas><img id="sigimg_t" alt=""><div class="ph">وقّعي هنا</div></div>
+    <div class="sigtools"><span></span><button type="button" class="btn-g" data-clear="t">مسح التوقيع</button></div></div>
 </section>
 
-<!-- 2 الوكيل -->
-<section class="card" id="s2">
-  <h2><span class="n">2</span> ما تم حيال الطالبة (خاص بوكيلة المدرسة)</h2>
+<!-- 2 الوكيلة -->
+<section class="card" id="s2" data-sec="a">
+  <h2><span class="n">2</span> ما تم حيال الطالبة (خاص بوكيلة المدرسة)<span class="tag" id="tag2"></span></h2>
   <textarea id="agentAct" placeholder="الإجراء المتخذ…"></textarea>
   <label class="refer"><input type="checkbox" id="toCounselor"><span>تمت إحالتها إلى الموجهة الطلابية</span></label>
   <div class="grid" style="margin-top:10px">
-    <div><label class="f" for="aname">وكيلة المدرسة</label><input type="text" id="aname" value="لطيفة الشهري" autocomplete="off"></div>
-    <div><label class="f" for="asign">التوقيع</label><input type="text" id="asign" autocomplete="off"></div>
-    <div class="full"><label class="f" for="adate">التاريخ (هجري)</label>
+    <div><label class="f" for="aname">وكيلة المدرسة</label><input type="text" id="aname" autocomplete="off"></div>
+    <div><label class="f" for="adate">التاريخ (هجري)</label>
       <div class="datebox"><input type="text" id="adate" placeholder="يوم / شهر / سنة هـ" autocomplete="off"><button type="button" class="btn-s" data-today="adate">اليوم</button></div></div>
   </div>
+  <div class="sigwrap"><label class="f">التوقيع (ارسمي بإصبعك)</label>
+    <div class="sigbox" id="sigbox_a"><canvas id="sig_a"></canvas><img id="sigimg_a" alt=""><div class="ph">وقّعي هنا</div></div>
+    <div class="sigtools"><span></span><button type="button" class="btn-g" data-clear="a">مسح التوقيع</button></div></div>
 </section>
 
-<!-- 3 المرشد -->
-<section class="card" id="s3">
-  <h2><span class="n">3</span> ما تم حيال الطالبة (خاص بالموجهة الطلابية)</h2>
+<!-- 3 الموجهة -->
+<section class="card" id="s3" data-sec="c">
+  <h2><span class="n">3</span> ما تم حيال الطالبة (خاص بالموجهة الطلابية)<span class="tag" id="tag3"></span></h2>
   <textarea id="cAct" placeholder="الإجراء المتخذ…"></textarea>
   <div class="grid" style="margin-top:10px">
     <div><label class="f" for="cname">الموجهة الطلابية</label><input type="text" id="cname" autocomplete="off"></div>
-    <div><label class="f" for="csign">التوقيع</label><input type="text" id="csign" autocomplete="off"></div>
-    <div class="full"><label class="f" for="cdate">التاريخ (هجري)</label>
+    <div><label class="f" for="cdate">التاريخ (هجري)</label>
       <div class="datebox"><input type="text" id="cdate" placeholder="يوم / شهر / سنة هـ" autocomplete="off"><button type="button" class="btn-s" data-today="cdate">اليوم</button></div></div>
   </div>
+  <div class="sigwrap"><label class="f">التوقيع (ارسمي بإصبعك)</label>
+    <div class="sigbox" id="sigbox_c"><canvas id="sig_c"></canvas><img id="sigimg_c" alt=""><div class="ph">وقّعي هنا</div></div>
+    <div class="sigtools"><span></span><button type="button" class="btn-g" data-clear="c">مسح التوقيع</button></div></div>
 </section>
 
 <section class="card notes">
@@ -134,90 +171,228 @@ dialog pre{white-space:pre-wrap;font-family:inherit;background:#f6f8fa;border-ra
 </section>
 </div>
 
-<div class="bar">
-  <button class="btn-p" id="summaryBtn" type="button">عرض الملخص ونسخه</button>
+<div id="doneArea"></div>
+</div>
+
+<div class="bar" id="bar">
+  <button class="btn-p" id="mainBtn" type="button">…</button>
   <button class="btn-g" id="resetBtn" type="button">نموذج جديد</button>
 </div>
 <div class="toast" id="toast"></div>
 
-<dialog id="dlg">
-  <b>ملخص التحويل</b>
-  <pre id="sumText"></pre>
-  <div style="display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn-g" id="closeBtn" type="button">إغلاق</button>
-    <button class="btn-p" id="copyBtn" type="button">نسخ</button>
-  </div>
-</dialog>
-
 <script>
+/* ====== إعداد الحفظ في الدرايف: ضعي هنا رابط تطبيق الويب من Google Apps Script ====== */
+const API_URL = '';
+/* ================================================================================= */
+
 const $=id=>document.getElementById(id);
-const ids=['student','grade','section','subject','period','otherTxt','issue','tname','tsign','tdate','agentAct','aname','asign','adate','cAct','cname','csign','cdate'];
-const KEY='student-referral-draft';
-function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+const P=new URLSearchParams(location.search);
+const RID=(P.get('id')||'').trim();
+const ROLE=({a:'a',c:'c'})[P.get('s')]||'t';      // t = المعلمة (افتراضي)
+const BASE=location.origin+location.pathname;
+const ROLE_AR={t:'المعلمة',a:'الوكيلة',c:'الموجهة'};
+const F={
+  t:['student','grade','section','subject','period','otherTxt','issue','tname','tdate'],
+  a:['agentAct','aname','adate'],
+  c:['cAct','cname','cdate']
+};
+let recordId=RID, stage='t', sigs={t:'',a:'',c:''}, busy=false;
+
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),2600)}
+function banner(kind,msg){$('banner').innerHTML=msg?'<div class="banner '+kind+'">'+msg+'</div>':''}
 function hijriToday(){
   try{
     const p=new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-arab',{day:'numeric',month:'numeric',year:'numeric'}).formatToParts(new Date());
     const g=t=>p.find(x=>x.type===t).value;
-    return g('day')+' / '+g('month')+' / '+g('year')+'هـ';
+    return g('day')+' / '+g('month')+' / '+g('year')+' هـ';
   }catch(e){return ''}
 }
-function save(){
+
+/* ---------- التوقيع بالإصبع ---------- */
+const pads={};
+function initPad(r){
+  const c=$('sig_'+r), ctx=c.getContext('2d');
+  let drawing=false,last=null,has=false,w=0,h=0;
+  function fit(){
+    const rect=c.getBoundingClientRect(); if(!rect.width) return;
+    const dpr=Math.max(1,window.devicePixelRatio||1);
+    const snap=has?c.toDataURL():null;
+    c.width=Math.round(rect.width*dpr); c.height=Math.round(rect.height*dpr);
+    w=rect.width;h=rect.height;
+    ctx.setTransform(dpr,0,0,dpr,0,0); ctx.lineWidth=2.4; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#0b1f33';
+    if(snap){const im=new Image();im.onload=()=>ctx.drawImage(im,0,0,w,h);im.src=snap}
+  }
+  const pt=e=>{const r=c.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top}};
+  c.addEventListener('pointerdown',e=>{if(locked(r))return;e.preventDefault();c.setPointerCapture(e.pointerId);drawing=true;last=pt(e);ctx.beginPath();ctx.arc(last.x,last.y,1.2,0,7);ctx.fillStyle='#0b1f33';ctx.fill()});
+  c.addEventListener('pointermove',e=>{if(!drawing)return;e.preventDefault();const p=pt(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;has=true;$('sigbox_'+r).classList.add('signed')});
+  const end=()=>{if(drawing){drawing=false;has=true;sigs[r]=c.toDataURL('image/png');$('sigbox_'+r).classList.add('signed')}};
+  c.addEventListener('pointerup',end);c.addEventListener('pointercancel',end);
+  pads[r]={fit,clear(){ctx.clearRect(0,0,w,h);has=false;sigs[r]='';$('sigbox_'+r).classList.remove('signed')},has:()=>has};
+  fit();window.addEventListener('resize',fit);
+}
+function locked(r){return r!==ROLE}
+function showSig(r,data){
+  const im=$('sigimg_'+r);
+  if(data){im.src=data;im.classList.add('has');$('sigbox_'+r).classList.add('signed')}
+  else{im.removeAttribute('src');im.classList.remove('has');$('sigbox_'+r).classList.remove('signed')}
+}
+document.querySelectorAll('[data-clear]').forEach(b=>b.onclick=()=>{pads[b.dataset.clear].clear()});
+document.querySelectorAll('[data-today]').forEach(b=>b.onclick=()=>{$(b.dataset.today).value=hijriToday()});
+
+/* ---------- جمع وتعبئة السجل ---------- */
+function collect(){
+  const rec={t:{},a:{},c:{},stage:stage};
+  F.t.forEach(i=>rec.t[i]=$(i).value.trim());
+  rec.t.reasons=[...document.querySelectorAll('#reasons input:checked')].map(c=>c.value);
+  rec.t.sig=sigs.t;
+  F.a.forEach(i=>rec.a[i]=$(i).value.trim()); rec.a.toC=$('toCounselor').checked; rec.a.sig=sigs.a;
+  F.c.forEach(i=>rec.c[i]=$(i).value.trim()); rec.c.sig=sigs.c;
+  return rec;
+}
+function fill(rec){
+  const t=rec.t||{},a=rec.a||{},c=rec.c||{};
+  F.t.forEach(i=>$(i).value=t[i]||'');
+  document.querySelectorAll('#reasons input').forEach(x=>x.checked=(t.reasons||[]).includes(x.value));
+  F.a.forEach(i=>$(i).value=a[i]||''); $('toCounselor').checked=!!a.toC;
+  F.c.forEach(i=>$(i).value=c[i]||'');
+  sigs={t:t.sig||'',a:a.sig||'',c:c.sig||''};
+  ['t','a','c'].forEach(r=>{if(r!==ROLE)showSig(r,sigs[r])});
+  stage=rec.stage||stage; sync();
+}
+function sync(){$('otherTxt').style.display=$('otherChk').checked?'block':'none'}
+document.addEventListener('change',sync);
+
+/* ---------- القفل حسب الدور ---------- */
+function applyRole(){
+  const map={t:'s1',a:'s2',c:'s3'};
+  ['t','a','c'].forEach(r=>{
+    const sec=$(map[r]), mine=(r===ROLE);
+    sec.classList.toggle('mine',mine); sec.classList.toggle('ro',!mine);
+    sec.querySelectorAll('input,select,textarea').forEach(el=>{if(!el.closest('.sigbox'))el.disabled=!mine});
+    $('tag'+({t:1,a:2,c:3})[r]).textContent=mine?'قسمك':'للاطلاع';
+  });
+  if(ROLE==='a'&&!$('aname').value)$('aname').value='لطيفة الشهري';
+  document.querySelectorAll('#steps div').forEach(d=>{
+    const order=['t','a','c'],i=order.indexOf(d.dataset.r),cur=order.indexOf(ROLE);
+    d.className=i<cur?'done':(i===cur?'on':'');
+  });
+  // قسم الموجهة يظهر للوكيلة أيضاً لكنه مقفل
+  $('mainBtn').textContent = ROLE==='t' ? 'توقيع وإرسال للوكيلة عبر واتساب' : (ROLE==='a' ? 'توقيع وإرسال للموجهة عبر واتساب' : 'توقيع وإنهاء وحفظ في الدرايف');
+  $('resetBtn').style.display = ROLE==='t' && !RID ? '' : 'none';
+  if(ROLE!=='t') $('s1').querySelector('h2').scrollIntoView&&0;
+}
+
+/* ---------- الاتصال بالدرايف عبر Apps Script ---------- */
+async function api(method,payload){
+  if(!API_URL) throw new Error('NO_API');
+  if(method==='GET'){
+    const r=await fetch(API_URL+'?id='+encodeURIComponent(payload.id),{redirect:'follow'});
+    return r.json();
+  }
+  const r=await fetch(API_URL,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+  return r.json();
+}
+
+function validate(){
+  const bad=[];
+  const need=(id,msg)=>{if(!$(id).value.trim()){$(id).classList.add('err');bad.push(msg)}else $(id).classList.remove('err')};
+  if(ROLE==='t'){
+    need('student','اسم الطالبة'); need('tname','اسم المعلمة');
+    if(!document.querySelector('#reasons input:checked')&&!$('issue').value.trim())bad.push('سبب التحويل أو إيضاح المشكلة');
+  }
+  if(ROLE==='a'){need('agentAct','الإجراء المتخذ');need('aname','اسم الوكيلة')}
+  if(ROLE==='c'){need('cAct','الإجراء المتخذ');need('cname','اسم الموجهة')}
+  if(!sigs[ROLE]) bad.push('التوقيع');
+  return bad;
+}
+
+function waLink(text){return 'https://wa.me/?text='+encodeURIComponent(text)}
+function openWA(url){const w=window.open(url,'_blank');if(!w)location.href=url}
+
+async function onMain(){
+  if(busy)return;
+  const bad=validate();
+  if(bad.length){toast('أكملي: '+bad.join('، '));return}
+  const dField={t:'tdate',a:'adate',c:'cdate'}[ROLE];
+  if(!$(dField).value.trim())$(dField).value=hijriToday();
+  if(!API_URL){banner('warn','الحفظ والإرسال غير مفعّل بعد: لم يُربط الدرايف. أضيفي رابط تطبيق الويب في أول السكربت ثم أعيدي المحاولة.');toast('الربط مع الدرايف غير مفعّل بعد');return}
+  busy=true;$('mainBtn').disabled=true;const old=$('mainBtn').textContent;$('mainBtn').textContent='جارٍ الإرسال…';
   try{
-    const d={};ids.forEach(i=>d[i]=$(i).value);
-    d.reasons=[...document.querySelectorAll('#reasons input')].map(c=>c.checked);
-    d.toC=$('toCounselor').checked;
-    localStorage.setItem(KEY,JSON.stringify(d));
-  }catch(e){}
+    const rec=collect();
+    const toC=rec.a.toC;
+    if(ROLE==='t') rec.stage='a';
+    else if(ROLE==='a') rec.stage=toC?'c':'done';
+    else rec.stage='done';
+    const finalize=rec.stage==='done';
+    const res=await api('POST',{action:finalize?'finalize':'save',id:recordId||undefined,record:rec});
+    if(!res||!res.ok) throw new Error((res&&res.error)||'تعذر الحفظ');
+    recordId=res.id||recordId;
+    showDone(rec.stage,res);
+    if(rec.stage==='a') openWA(waLink('تحويل طالبة جديد من المعلمة '+(rec.t.tname||'')+'، بانتظار إجراء الوكيلة. افتحي الرابط:\n'+BASE+'?id='+recordId+'&s=a'));
+    if(rec.stage==='c') openWA(waLink('تحويل طالبة بانتظار إجراء الموجهة الطلابية. افتحي الرابط:\n'+BASE+'?id='+recordId+'&s=c'));
+  }catch(e){
+    banner('err','تعذر الإرسال: '+(e.message==='Failed to fetch'?'تحققي من الاتصال بالإنترنت أو من نشر السكربت (Anyone).':e.message));
+    $('mainBtn').textContent=old;
+  }finally{busy=false;$('mainBtn').disabled=false}
 }
-function load(){
-  try{
-    const d=JSON.parse(localStorage.getItem(KEY)||'null');if(!d)return;
-    ids.forEach(i=>{if(d[i]!=null)$(i).value=d[i]});
-    document.querySelectorAll('#reasons input').forEach((c,k)=>c.checked=!!(d.reasons&&d.reasons[k]));
-    $('toCounselor').checked=!!d.toC;
-  }catch(e){}
+
+function showDone(st,res){
+  $('formArea').style.display='none';$('bar').style.display='none';$('steps').style.display='none';banner('','');
+  let h='<section class="card done-card"><div class="ok">✅</div>';
+  if(st==='a'){
+    const link=BASE+'?id='+recordId+'&s=a';
+    h+='<h2>تم حفظ تحويل المعلمة</h2><p>انفتحت رسالة واتساب جاهزة لإرسالها للوكيلة. إن لم تنفتح فاستخدمي الأزرار:</p><div class="linkbox">'+link+'</div>'+
+       '<div class="actions"><button class="btn-w" id="reW">إرسال الرابط للوكيلة عبر واتساب</button><button class="btn-g" id="reC">نسخ الرابط</button></div>';
+    window.__wa=waLink('تحويل طالبة جديد بانتظار إجراء الوكيلة. افتحي الرابط:\n'+link);window.__link=link;
+  }else if(st==='c'){
+    const link=BASE+'?id='+recordId+'&s=c';
+    h+='<h2>تم حفظ إجراء الوكيلة</h2><p>أرسلي الرابط التالي للموجهة الطلابية عبر واتساب:</p><div class="linkbox">'+link+'</div>'+
+       '<div class="actions"><button class="btn-w" id="reW">إرسال الرابط للموجهة عبر واتساب</button><button class="btn-g" id="reC">نسخ الرابط</button></div>';
+    window.__wa=waLink('تحويل طالبة بانتظار إجراء الموجهة الطلابية. افتحي الرابط:\n'+link);window.__link=link;
+  }else{
+    h+='<h2>اكتمل التحويل وحُفظ في الدرايف</h2><p>حُفظ النموذج كاملاً بصيغة PDF في مجلد «تحويلات الطالبات» الخاص بالوكيلة، وأُرسلت نسخة منه إلى بريدها.</p>'+
+       '<div class="actions">'+(ROLE==='c'?'<button class="btn-w" id="reW">إبلاغ الوكيلة بواتساب</button>':'')+'</div>';
+    window.__wa=waLink('اكتمل تحويل طالبة وحُفظ في الدرايف.');
+  }
+  h+='</section>';
+  $('doneArea').innerHTML=h;
+  if($('reW'))$('reW').onclick=()=>openWA(window.__wa);
+  if($('reC'))$('reC').onclick=async()=>{try{await navigator.clipboard.writeText(window.__link);toast('تم نسخ الرابط ✓')}catch(e){toast('حددي الرابط وانسخيه')}};
 }
-function sync(){
-  $('otherTxt').style.display=$('otherChk').checked?'block':'none';
-  $('s3').classList.toggle('locked',!$('toCounselor').checked);
-}
-document.addEventListener('input',()=>{sync();save()});
-document.addEventListener('change',()=>{sync();save()});
-document.querySelectorAll('[data-today]').forEach(b=>b.onclick=()=>{$(b.dataset.today).value=hijriToday();save()});
-function summary(){
-  const r=[...document.querySelectorAll('#reasons input:checked')].map(c=>c.value==='أخرى'?('أخرى'+($('otherTxt').value?' ('+$('otherTxt').value+')':'')):c.value);
-  const v=i=>$(i).value.trim()||'—';
-  let s='نموذج: تحويل طالبة لوكيلة شؤون الطالبات\n'+
-  'الطالبة: '+v('student')+' | الصف: '+v('grade')+(($('section').value.trim())?' / '+$('section').value.trim():'')+'\n'+
-  'المادة: '+v('subject')+' | الحصة: '+v('period')+'\n'+
-  'سبب التحويل: '+(r.length?r.join('، '):'—')+'\n'+
-  'إيضاح المشكلة: '+v('issue')+'\n'+
-  'المعلمة: '+v('tname')+' | التاريخ: '+v('tdate')+'\n';
-  if($('agentAct').value.trim()||$('toCounselor').checked)
-    s+='\nإجراء الوكيلة: '+v('agentAct')+'\n'+($('toCounselor').checked?'تمت الإحالة إلى الموجهة الطلابية\n':'')+'الوكيلة: '+v('aname')+' | التاريخ: '+v('adate')+'\n';
-  if($('cAct').value.trim())
-    s+='\nإجراء الموجهة: '+v('cAct')+'\nالموجهة: '+v('cname')+' | التاريخ: '+v('cdate')+'\n';
-  s+='\nابتدائية الأبناء الخامسة للطفولة المبكرة والروضة الملحقة بها';
-  return s;
-}
-$('summaryBtn').onclick=()=>{
-  if(!$('student').value.trim()){$('student').classList.add('err');$('student').focus();toast('اكتبي اسم الطالبة أولاً');return}
-  $('student').classList.remove('err');
-  $('sumText').textContent=summary();$('dlg').showModal();
-};
-$('closeBtn').onclick=()=>$('dlg').close();
-$('copyBtn').onclick=async()=>{
-  try{await navigator.clipboard.writeText($('sumText').textContent);toast('تم النسخ ✓')}
-  catch(e){const r=document.createRange();r.selectNodeContents($('sumText'));const s=getSelection();s.removeAllRanges();s.addRange(r);toast('حددي النص وانسخيه')}
-};
+
+$('mainBtn').onclick=onMain;
+let confirmed=false;
 $('resetBtn').onclick=()=>{
   if(!confirmed){confirmed=true;$('resetBtn').textContent='اضغطي مرة أخرى للتأكيد';setTimeout(()=>{confirmed=false;$('resetBtn').textContent='نموذج جديد'},2500);return}
-  ids.forEach(i=>{if(i!=='aname')$(i).value=''});
+  confirmed=false;$('resetBtn').textContent='نموذج جديد';
+  [...F.t,...F.a,...F.c].forEach(i=>$(i).value='');
   document.querySelectorAll('#reasons input').forEach(c=>c.checked=false);$('toCounselor').checked=false;
-  confirmed=false;$('resetBtn').textContent='نموذج جديد';sync();save();toast('تم مسح النموذج');
+  pads.t.clear();sync();toast('تم مسح النموذج');
 };
-let confirmed=false;
-load();sync();
+
+/* ---------- البدء ---------- */
+async function start(){
+  ['t','a','c'].forEach(initPad);
+  applyRole();sync();
+  if(ROLE==='t'&&!RID){
+    if(!API_URL)banner('warn','الحفظ والإرسال غير مفعّل بعد: لم يُربط الدرايف.');
+    return;
+  }
+  if(!RID){banner('err','الرابط ناقص. اطلبي من المرسِلة إعادة إرسال الرابط الكامل.');$('mainBtn').disabled=true;return}
+  if(!API_URL){banner('err','لم يُربط الحفظ بعد، فلا يمكن فتح هذا التحويل.');$('mainBtn').disabled=true;return}
+  banner('info','جارٍ تحميل التحويل…');
+  try{
+    const res=await api('GET',{id:RID});
+    if(!res||!res.ok)throw new Error((res&&res.error)||'لم يُعثر على التحويل');
+    if(res.record.stage==='done'){banner('info','اكتمل هذا التحويل وحُفظ، ولا يمكن تعديله.');fill(res.record);document.querySelectorAll('.card').forEach(s=>s.classList.add('ro'));$('bar').style.display='none';return}
+    fill(res.record);applyRole();banner('','');
+    if(ROLE==='a'&&res.record.stage!=='a')banner('info','هذا التحويل في مرحلة مختلفة؛ تأكدي من أنك الجهة المطلوبة.');
+  }catch(e){
+    banner('err','تعذر تحميل التحويل: '+e.message);$('mainBtn').disabled=true;
+  }
+  Object.values(pads).forEach(p=>p.fit());
+}
+start();
 </script>
 </body>
 </html>
