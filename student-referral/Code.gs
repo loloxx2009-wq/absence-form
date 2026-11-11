@@ -127,13 +127,13 @@ function esc_(s) {
 
 function sigImg_(d) {
   if (!d || d.indexOf('data:image/png;base64,') !== 0) return '&nbsp;';
-  return '<img src="' + d + '" height="30"/>';
+  return '<img src="' + d + '" height="42"/>';
 }
 
 function row_(label, name, sig, date) {
-  return '<table width="100%" cellpadding="2" cellspacing="0" style="margin:2px 0;font-size:11.5px"><tr>' +
+  return '<table width="100%" cellpadding="3" cellspacing="0" style="margin:6px 0;font-size:15px"><tr>' +
     '<td valign="middle" width="36%"><b>' + label + ' /</b> ' + esc_(name) + '</td>' +
-    '<td valign="middle" width="34%"><table cellpadding="0" cellspacing="0" style="font-size:11.5px"><tr><td valign="middle"><b>التوقيع /</b>&nbsp;</td><td valign="middle">' + sigImg_(sig) + '</td></tr></table></td>' +
+    '<td valign="middle" width="34%"><table cellpadding="0" cellspacing="0" style="font-size:15px"><tr><td valign="middle"><b>التوقيع /</b>&nbsp;</td><td valign="middle">' + sigImg_(sig) + '</td></tr></table></td>' +
     '<td valign="middle"><b>التاريخ :</b> ' + esc_(date) + '</td></tr></table>';
 }
 
@@ -144,27 +144,27 @@ function makePdf_(rec, id) {
   var reasons = (t.reasons || []).map(function (r) {
     return r === 'أخرى' ? 'أخرى' + (t.otherTxt ? ' (' + t.otherTxt + ')' : '') : r;
   }).join('، ');
-  var P = '<p style="margin:2px 0">';
-  var HR = '<hr style="margin:4px 0">';
+  var P = '<p style="margin:5px 0">';
+  var HR = '<hr style="margin:9px 0">';
   var html =
-    '<html><head><meta charset="utf-8"></head><body dir="rtl" style="margin:0;font-family:Arial,sans-serif;font-size:11.5px;line-height:1.35;direction:rtl;text-align:right">' +
-    '<div style="border:2px solid #000;padding:8px 12px">' +
-    '<table width="100%" cellpadding="0" cellspacing="0"><tr><td valign="middle" align="right" style="line-height:1.55;font-size:11px">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم بعسير<br>ابتدائية الأبناء الخامسة للطفولة المبكرة والروضة الملحقة بها</td>' +
-    '<td width="110" align="left" valign="middle"><img src="data:image/jpeg;base64,' + LOGO_B64 + '" width="92"/></td></tr></table>' +
-    HR + '<table width="100%" cellpadding="0" cellspacing="0" style="font-size:11.5px"><tr><td><b>اسم النموذج :</b> تحويل طالبة لوكيلة شؤون الطالبات</td><td align="left"><b>رمز النموذج :</b> ( و.ط.ع.ن - ٠٤ - ٠٣ )</td></tr></table>' +
-    '<div style="text-align:center;font-size:14px;font-weight:bold;margin:5px 0">تحويل طالبة لوكيلة شؤون الطالبات</div>' +
+    '<html><head><meta charset="utf-8"></head><body dir="rtl" style="margin:0;font-family:Arial,sans-serif;font-size:15px;line-height:1.45;direction:rtl;text-align:right">' +
+    '<div style="border:2px solid #000;padding:14px 18px">' +
+    '<table width="100%" cellpadding="0" cellspacing="0"><tr><td valign="middle" align="right" style="line-height:1.6;font-size:14.5px">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم بعسير<br>ابتدائية الأبناء الخامسة للطفولة المبكرة والروضة الملحقة بها</td>' +
+    '<td width="150" align="left" valign="middle"><img src="data:image/jpeg;base64,' + LOGO_B64 + '" width="125"/></td></tr></table>' +
+    HR + '<table width="100%" cellpadding="0" cellspacing="0" style="font-size:15px"><tr><td><b>اسم النموذج :</b> تحويل طالبة لوكيلة شؤون الطالبات</td><td align="left"><b>رمز النموذج :</b> ( و.ط.ع.ن - ٠٤ - ٠٣ )</td></tr></table>' +
+    '<div style="text-align:center;font-size:20px;font-weight:bold;margin:10px 0">تحويل طالبة لوكيلة شؤون الطالبات</div>' +
     P + '<b>اسم الطالبة /</b> ' + esc_(t.student) + ' &nbsp;&nbsp; <b>بالصف /</b> ' + esc_(t.grade) + ' ' + esc_(t.section) + '</p>' +
     P + '<b>المادة /</b> ' + esc_(t.subject) + ' &nbsp;&nbsp; <b>الحصة الدراسية /</b> ' + esc_(t.period) + '</p>' +
     P + '<b>سبب التحويل :</b> ' + esc_(reasons) + '</p>' +
-    P + '<b>إيضاح المشكلة :</b><br>' + nl_(t.issue) + '</p>' +
+    P + '<b>إيضاح المشكلة :</b></p><div style="min-height:46px">' + nl_(t.issue) + '</div>' +
     row_('اسم المعلمة', t.tname, t.sig, t.tdate) +
-    HR + P + '<b>ما تم حيال الطالبة : ( خاص بوكيلة المدرسة ) :</b><br>' + nl_(a.agentAct) + '</p>' +
+    HR + P + '<b>ما تم حيال الطالبة : ( خاص بوكيلة المدرسة ) :</b></p><div style="min-height:46px">' + nl_(a.agentAct) + '</div>' +
     (a.toC ? P + '☑ تمت إحالتها إلى الموجهة الطلابية .</p>' : '') +
     row_('وكيلة المدرسة', a.aname, a.sig, a.adate) +
     (a.toC || c.cAct ?
-      HR + P + '<b>ما تم حيال الطالبة : ( خاص بالموجهة الطلابية ) :</b><br>' + nl_(c.cAct) + '</p>' +
+      HR + P + '<b>ما تم حيال الطالبة : ( خاص بالموجهة الطلابية ) :</b></p><div style="min-height:46px">' + nl_(c.cAct) + '</div>' +
       row_('الموجهة الطلابية', c.cname, c.sig, c.cdate) : '') +
-    HR + '<div style="font-size:9px;line-height:1.4"><b>ملاحظات :</b><br>' +
+    HR + '<div style="font-size:12px;line-height:1.5"><b>ملاحظات :</b><br>' +
     '١- يتم إخطار وكيلة شؤون الطالبات حسب هذا النموذج بعد انتهاء الحصة الدراسية .<br>' +
     '٢- تقوم وكيلة شؤون الطالبات باستدعاء الطالبة في وقت لا يؤثر عليها دراسياً .<br>' +
     '٣- يتم تحويل الطالبة إلى الموجهة في حالة تكرار السلوك أو الضعف الدراسي .<br>' +
