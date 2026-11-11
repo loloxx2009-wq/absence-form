@@ -32,7 +32,7 @@ h1{margin:6px 0 2px;text-align:center;font-size:24px;font-weight:800;color:var(-
 .card.mine{border-color:var(--brand);box-shadow:0 0 0 3px #0f6e6e1a}
 .card.ro input,.card.ro select,.card.ro textarea{background:#f1f3f5;color:#3b4a58;border-color:#e3e8ec}
 .card.ro .chip,.card.ro .refer,.card.ro .datebox button{pointer-events:none}
-.card.ro .datebox button{display:none}
+
 .card.hidden{display:none}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .full{grid-column:1/-1}
@@ -45,7 +45,7 @@ textarea{min-height:96px;resize:vertical}
 .chip input{position:absolute;opacity:0;inset:0;cursor:pointer;width:100%;height:100%;margin:0}
 .chip span{display:block;padding:9px 14px;border:1.5px solid var(--line);border-radius:999px;background:#fafbfc;font-size:15px;transition:.15s}
 .chip input:checked+span{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:700}
-.datebox{display:flex;gap:6px}
+.dsel{display:flex;gap:6px}.dsel select{flex:1;padding:10px 6px}
 .datebox button{white-space:nowrap}
 button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:10px 14px;font-weight:700}
 button:disabled{opacity:.55;cursor:default}
@@ -122,8 +122,7 @@ button:disabled{opacity:.55;cursor:default}
     </div>
     <div class="full"><label class="f" for="issue">إيضاح المشكلة</label><textarea id="issue"></textarea></div>
     <div><label class="f" for="tname">اسم المعلمة</label><input type="text" id="tname" autocomplete="off"></div>
-    <div><label class="f" for="tdate">التاريخ (هجري)</label>
-      <div class="datebox"><input type="text" id="tdate" placeholder="يوم / شهر / سنة هـ" autocomplete="off"><button type="button" class="btn-s" data-today="tdate">اليوم</button></div></div>
+    <div><label class="f">التاريخ (هجري)</label><div class="dsel" data-for="tdate"><select class="d"></select><select class="m"></select><select class="y"></select></div><input type="hidden" id="tdate"></div>
   </div>
   <div class="sigwrap"><label class="f">التوقيع (ارسمي بإصبعك)</label>
     <div class="sigbox" id="sigbox_t"><canvas id="sig_t"></canvas><img id="sigimg_t" alt=""><div class="ph">وقّعي هنا</div></div>
@@ -137,8 +136,7 @@ button:disabled{opacity:.55;cursor:default}
   <label class="refer"><input type="checkbox" id="toCounselor"><span>تمت إحالتها إلى الموجهة الطلابية</span></label>
   <div class="grid" style="margin-top:10px">
     <div><label class="f" for="aname">وكيلة المدرسة</label><input type="text" id="aname" autocomplete="off"></div>
-    <div><label class="f" for="adate">التاريخ (هجري)</label>
-      <div class="datebox"><input type="text" id="adate" placeholder="يوم / شهر / سنة هـ" autocomplete="off"><button type="button" class="btn-s" data-today="adate">اليوم</button></div></div>
+    <div><label class="f">التاريخ (هجري)</label><div class="dsel" data-for="adate"><select class="d"></select><select class="m"></select><select class="y"></select></div><input type="hidden" id="adate"></div>
   </div>
   <div class="sigwrap"><label class="f">التوقيع (ارسمي بإصبعك)</label>
     <div class="sigbox" id="sigbox_a"><canvas id="sig_a"></canvas><img id="sigimg_a" alt=""><div class="ph">وقّعي هنا</div></div>
@@ -151,8 +149,7 @@ button:disabled{opacity:.55;cursor:default}
   <textarea id="cAct" placeholder="الإجراء المتخذ…"></textarea>
   <div class="grid" style="margin-top:10px">
     <div><label class="f" for="cname">الموجهة الطلابية</label><input type="text" id="cname" autocomplete="off"></div>
-    <div><label class="f" for="cdate">التاريخ (هجري)</label>
-      <div class="datebox"><input type="text" id="cdate" placeholder="يوم / شهر / سنة هـ" autocomplete="off"><button type="button" class="btn-s" data-today="cdate">اليوم</button></div></div>
+    <div><label class="f">التاريخ (هجري)</label><div class="dsel" data-for="cdate"><select class="d"></select><select class="m"></select><select class="y"></select></div><input type="hidden" id="cdate"></div>
   </div>
   <div class="sigwrap"><label class="f">التوقيع (ارسمي بإصبعك)</label>
     <div class="sigbox" id="sigbox_c"><canvas id="sig_c"></canvas><img id="sigimg_c" alt=""><div class="ph">وقّعي هنا</div></div>
@@ -202,9 +199,9 @@ function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');cle
 function banner(kind,msg){$('banner').innerHTML=msg?'<div class="banner '+kind+'">'+msg+'</div>':''}
 function hijriToday(){
   try{
-    const p=new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-arab',{day:'numeric',month:'numeric',year:'numeric'}).formatToParts(new Date());
-    const g=t=>p.find(x=>x.type===t).value;
-    return g('day')+' / '+g('month')+' / '+g('year')+' هـ';
+    const p=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn',{day:'numeric',month:'numeric',year:'numeric'}).formatToParts(new Date());
+    const g=k=>p.find(x=>x.type===k).value.replace(/\D/g,'');
+    return ar(g('day'))+' / '+ar(g('month'))+' / '+ar(g('year'))+' هـ';
   }catch(e){return ''}
 }
 
@@ -237,7 +234,24 @@ function showSig(r,data){
   else{im.removeAttribute('src');im.classList.remove('has');$('sigbox_'+r).classList.remove('signed')}
 }
 document.querySelectorAll('[data-clear]').forEach(b=>b.onclick=()=>{pads[b.dataset.clear].clear()});
-document.querySelectorAll('[data-today]').forEach(b=>b.onclick=()=>{$(b.dataset.today).value=hijriToday()});
+const AR='٠١٢٣٤٥٦٧٨٩',ar=n=>String(n).replace(/\d/g,d=>AR[d]);
+function buildDates(){
+  document.querySelectorAll('.dsel').forEach(box=>{
+    const d=box.querySelector('.d'),m=box.querySelector('.m'),y=box.querySelector('.y');
+    const opts=(ph,a,b)=>'<option value="">'+ph+'</option>'+Array.from({length:b-a+1},(_,i)=>'<option>'+ar(a+i)+'</option>').join('');
+    d.innerHTML=opts('اليوم',1,30);m.innerHTML=opts('الشهر',1,12);y.innerHTML=opts('السنة',1447,1450);
+    const upd=()=>{$(box.dataset.for).value=(d.value&&m.value&&y.value)?(d.value+' / '+m.value+' / '+y.value+' هـ'):''};
+    [d,m,y].forEach(s=>s.addEventListener('change',upd));
+  });
+}
+function setDate(id,str){
+  const box=document.querySelector('.dsel[data-for="'+id+'"]');if(!box)return;
+  const mm=String(str||'').match(/([٠-٩]+)\s*\/\s*([٠-٩]+)\s*\/\s*([٠-٩]+)/);
+  box.querySelector('.d').value=mm?mm[1]:'';box.querySelector('.m').value=mm?mm[2]:'';box.querySelector('.y').value=mm?mm[3]:'';
+  $(id).value=mm?(mm[1]+' / '+mm[2]+' / '+mm[3]+' هـ'):'';
+}
+function syncDates(){['tdate','adate','cdate'].forEach(id=>setDate(id,$(id).value))}
+function defaultOwnDate(){const id={t:'tdate',a:'adate',c:'cdate'}[ROLE];if(!$(id).value)setDate(id,hijriToday())}
 
 /* ---------- جمع وتعبئة السجل ---------- */
 function collect(){
@@ -257,7 +271,7 @@ function fill(rec){
   F.c.forEach(i=>$(i).value=c[i]||'');
   sigs={t:t.sig||'',a:a.sig||'',c:c.sig||''};
   ['t','a','c'].forEach(r=>{if(r!==ROLE)showSig(r,sigs[r])});
-  stage=rec.stage||stage; sync();
+  stage=rec.stage||stage; sync(); syncDates();
 }
 function sync(){$('otherTxt').style.display=$('otherChk').checked?'block':'none'}
 document.addEventListener('change',sync);
@@ -272,6 +286,7 @@ function applyRole(){
     $('tag'+({t:1,a:2,c:3})[r]).textContent=mine?'قسمك':'للاطلاع';
   });
   if(ROLE==='a'&&!$('aname').value)$('aname').value='لطيفة الشهري';
+  defaultOwnDate();
   document.querySelectorAll('#steps div').forEach(d=>{
     const order=['t','a','c'],i=order.indexOf(d.dataset.r),cur=order.indexOf(ROLE);
     d.className=i<cur?'done':(i===cur?'on':'');
@@ -314,7 +329,7 @@ async function onMain(){
   const bad=validate();
   if(bad.length){toast('أكملي: '+bad.join('، '));return}
   const dField={t:'tdate',a:'adate',c:'cdate'}[ROLE];
-  if(!$(dField).value.trim())$(dField).value=hijriToday();
+  if(!$(dField).value.trim())setDate(dField,hijriToday());
   if(!API_URL){banner('warn','الحفظ والإرسال غير مفعّل بعد: لم يُربط الدرايف. أضيفي رابط تطبيق الويب في أول السكربت ثم أعيدي المحاولة.');toast('الربط مع الدرايف غير مفعّل بعد');return}
   busy=true;$('mainBtn').disabled=true;const old=$('mainBtn').textContent;$('mainBtn').textContent='جارٍ الإرسال…';
   try{
@@ -367,13 +382,13 @@ $('resetBtn').onclick=()=>{
   confirmed=false;$('resetBtn').textContent='نموذج جديد';
   [...F.t,...F.a,...F.c].forEach(i=>$(i).value='');
   document.querySelectorAll('#reasons input').forEach(c=>c.checked=false);$('toCounselor').checked=false;
-  pads.t.clear();sync();toast('تم مسح النموذج');
+  pads.t.clear();sync();syncDates();defaultOwnDate();toast('تم مسح النموذج');
 };
 
 /* ---------- البدء ---------- */
 async function start(){
   ['t','a','c'].forEach(initPad);
-  applyRole();sync();
+  buildDates();applyRole();sync();
   if(ROLE==='t'&&!RID){
     if(!API_URL)banner('warn','الحفظ والإرسال غير مفعّل بعد: لم يُربط الدرايف.');
     return;
